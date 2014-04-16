@@ -20,5 +20,5 @@ while true
   system("#{RbConfig.ruby}", "decent_ci/ci.rb", *ci_args)
   puts "Sleeping"
 
-  sleep(60)
+  sleep(300)
 end

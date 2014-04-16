@@ -10,14 +10,14 @@ end
 FileUtils.mkdir_p(ARGV[0])
 FileUtils.cd(ARGV[0])
 
-system("git clone https://github.com/lefticus/simple_github_ci")
+system("git clone https://github.com/lefticus/decent_ci")
 
 while true
-  puts "Updating simple_github_ci"
-  system("cd simple_github_ci && git pull")
+  puts "Updating decent_ci"
+  system("cd decent_ci && git pull")
   puts "Running ci.rb"
   ci_args = ARGV[1..-1]
-  system("#{RbConfig.ruby}", "simple_github_ci/ci.rb", *ci_args)
+  system("#{RbConfig.ruby}", "decent_ci/ci.rb", *ci_args)
   puts "Sleeping"
 
   sleep(60)

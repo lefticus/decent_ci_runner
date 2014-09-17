@@ -3,7 +3,7 @@
 require 'fileutils'
 
 if ARGV.length < 4
-  puts "Usage: #{__FILE__} <buildfolder> <testruntrueorfalse> <githubtoken> <repositoryname> (<repositoryname> ...)"
+  puts "Usage: #{__FILE__} [options] <buildfolder> <testruntrueorfalse> <githubtoken> <repositoryname> (<repositoryname> ...)"
   abort("Not enough arguments")
 end
 

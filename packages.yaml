@@ -1,0 +1,15 @@
+packages:
+  - name: boto
+    source: pip
+  - name: gitpython
+    source: pip
+  - name: pygithub
+    source: pip
+
+  - name: octokit
+    source: gem
+  - name: activesupport
+    source: gem
+  - name: le
+    source: gem
+

@@ -1,0 +1,69 @@
+
+apt-sources:
+  - key: http://llvm.org/apt/llvm-snapshot.gpg.key
+    repository: 'deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.5 main'
+    id: 4096R/AF4F7421
+
+packages:
+  - name: dpkg-dev 
+    source: apt
+  - name: git 
+    source: apt
+  - name: cmake-curses-gui 
+    source: apt
+  - name: qt5-default 
+    source: apt 
+  - name: libqt5webkit5-dev 
+    source: apt
+  - name: libboost1.55-all-dev 
+    source: apt
+  - name: ruby2.0 
+    source: apt
+  - name: libssl-dev
+    source: apt
+  - name: libxt-dev
+    source: apt
+  - name: doxygen 
+    source: apt
+  - name: graphviz
+    source: apt 
+  - name: ruby2.0-dev
+    source: apt
+  - name: python2.7 
+    source: apt
+  - name: python-pip
+    source: apt
+  - name: cppcheck
+    source: apt
+  - name: gfortran
+    source: apt
+  - name: ttf-mscorefonts-installer
+    source: apt
+  - name: valgrind
+    source: apt
+  - name: clang-3.5
+    source: apt
+  - name: python3 
+    source: apt
+  - name: python3-yaml 
+    source: apt
+  - name: python3-matplotlib
+    source: apt
+  - name: lcov 
+    source: apt
+  - name: gcovr
+    source: apt
+
+  - name: EnergyPlus
+    source: wget
+    url: https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh
+
+  - name: wkhtmltopdf
+    source: dpkg
+    url: http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+  - name: pandoc
+    source: dpkg
+    url: https://github.com/jgm/pandoc/releases/download/1.15.2/pandoc-1.15.2-1-amd64.deb
+
+
+

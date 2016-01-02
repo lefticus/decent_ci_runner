@@ -1,5 +1,6 @@
 
 require 'yaml'
+require 'set'
 
 yml = YAML.load_file("packages.yaml")
 linux = YAML.load_file("linux/packages.yaml")
@@ -10,6 +11,32 @@ linux["packages"].concat(yml["packages"])
 def execute(string)
   puts("Executing: '#{string}'")
   return `#{string}`
+end
+
+def load_apt_keys()
+  keys = Set.new()
+
+  execute("apt-key list").split("\n").each{ |keyline|
+    if /pub\s+.*\/(?<id>\S+)\s+.*/ =~ keyline then
+      keys << id
+    end
+  }
+
+  puts("#{keys.length} keys loaded")
+  return keys
+end
+
+def load_apt_sources()
+  sources = Set.new()
+  File.open('/etc/apt/sources.list', 'r') do |f1|  
+    while line = f1.gets  
+      if /^deb\s.*/ =~ line then
+        sources << line.strip
+      end
+    end  
+  end      
+  puts("#{sources.length} sources loaded")
+  return sources
 end
 
 def load_gem_packages()
@@ -66,6 +93,9 @@ found_packages = load_gem_packages()
 found_packages.concat(load_apt_packages())
 found_packages.concat(load_pip_packages())
 
+apt_keys = load_apt_keys()
+apt_sources = load_apt_sources()
+
 # puts("Found Packages: #{found_packages}")
 
 needed_packages = []
@@ -101,7 +131,26 @@ needed_packages.each{ |needed|
   end
 }
 
-# puts(to_install)
+def install_apt_sources(sources, apt_keys, apt_sources)
+  did_something = false 
+  sources.each { |source| 
+    if !apt_keys.include?(source["id"]) then
+      execute("wget -O - #{source["key"]} | sudo apt-key add -")
+      did_something = true
+    end
+
+    if !apt_sources.include?(source["repository"]) then
+      execute("sudo apt-add-repository '#{source["repository"]}'")
+      did_something = true
+    end
+  }
+
+  if did_something then
+    execute("sudo apt-get update")
+  end
+end
+
+install_apt_sources(linux["apt-sources"], apt_keys, apt_sources)
 
 def install_apt(to_install)
   apt_string = "sudo apt-get --yes install "
@@ -176,4 +225,4 @@ end
   
 install_gem_pip(to_install)
 
-  
+

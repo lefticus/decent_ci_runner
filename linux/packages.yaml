@@ -1,8 +1,8 @@
 
 apt-sources:
   - key: http://llvm.org/apt/llvm-snapshot.gpg.key
-    repository: 'deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.5 main'
-    id: 4096R/AF4F7421
+    repository: deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.5 main
+    id: AF4F7421
 
 packages:
   - name: dpkg-dev 

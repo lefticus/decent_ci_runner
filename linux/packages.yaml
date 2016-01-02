@@ -53,12 +53,15 @@ packages:
     source: apt
   - name: gcovr
     source: apt
+  - name: xfonts-75dpi
+    source: apt
 
   - name: EnergyPlus
-    source: wget
-    url: https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh
+    source: script
+    script: FILE=`mktemp`; FILE2=`mktemp`; /bin/echo -en "y\n\nn\n" > $FILE2; cat $FILE2; wget https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh -qO $FILE && sudo sh $FILE < $FILE2 && sudo touch /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp; rm $FILE; rm $FILE2
+    check_file: /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
 
-  - name: wkhtmltopdf
+  - name: wkhtmltox
     source: dpkg
     url: http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
   - name: pandoc

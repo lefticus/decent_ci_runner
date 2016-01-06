@@ -10,9 +10,41 @@ net session >nul 2>&1
 if [ $? -eq 0 ]
 then
   ISADMIN=1
+else
+  ISADMIN=0
 fi
 
-if [ ! `which choco` ]
+which choco
+
+if [ $? -eq 0 ]
+then
+  HAS_CHOCO=1
+else
+  HAS_CHOCO=0
+fi
+
+which ruby
+
+if [ $? -eq 0 ]
+then
+  HAS_RUBY=1
+else
+  HAS_RUBY=0
+fi
+
+
+which elevate
+
+if [ $? -eq 0 ]
+then
+  HAS_ELEVATE=1
+else
+  HAS_ELEVATE=0
+fi
+
+
+
+if [ ! $HAS_CHOCO ]
 then
   if [ $ISADMIN ]
   then
@@ -24,7 +56,7 @@ then
   fi
 fi
 
-if [ ! `which elevate` || ! `which ruby` ]
+if [ $HAS_ELEVATE -eq 0 -o $HAS_RUBY -eq 0 ]
 then
   if [ $ISADMIN ]
   then

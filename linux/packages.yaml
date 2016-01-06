@@ -69,4 +69,10 @@ packages:
     url: https://github.com/jgm/pandoc/releases/download/1.15.2/pandoc-1.15.2-1-amd64.deb
 
 
+  - name: octokit
+    source: gem2.0
+  - name: activesupport
+    source: gem2.0
+  - name: le
+    source: gem2.0
 

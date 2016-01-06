@@ -1,22 +1,42 @@
 
 require 'yaml'
 require 'set'
+require 'tempfile'
 
 yml = YAML.load_file("packages.yaml")
-linux = YAML.load_file("linux/packages.yaml")
 
-linux["packages"].concat(yml["packages"])
+if /.*linux.*/i =~ RUBY_PLATFORM 
+  config = YAML.load_file("linux/packages.yaml")
+  SUDO_TOOL="sudo"
+  GEM_NEEDS_SUDO=true
+  PIP_NEEDS_SUDO=true
+elsif /.*win.*/i =~ RUBY_PLATFORM || /.*mingw.*/i =~ RUBY_PLATFORM 
+  config = YAML.load_file("windows/packages.yaml")
+  SUDO_TOOL="elevate -k -w "
+  GEM_NEEDS_SUDO=false
+  PIP_NEEDS_SUDO=false
+end
+
+config["packages"].concat(yml["packages"])
 
 
-def execute(string)
+def execute(string, critical=true)
   puts("Executing: '#{string}'")
-  return `#{string}`
+  begin 
+    return `#{string}`
+  rescue
+    if critical then
+      raise
+    else
+      return ""
+    end
+  end
 end
 
 def load_apt_keys()
   keys = Set.new()
 
-  execute("apt-key list").split("\n").each{ |keyline|
+  execute("apt-key list", false).split("\n").each{ |keyline|
     if /pub\s+.*\/(?<id>\S+)\s+.*/ =~ keyline then
       keys << id
     end
@@ -28,13 +48,18 @@ end
 
 def load_apt_sources()
   sources = Set.new()
-  File.open('/etc/apt/sources.list', 'r') do |f1|  
-    while line = f1.gets  
-      if /^deb\s.*/ =~ line then
-        sources << line.strip
-      end
-    end  
-  end      
+
+  begin
+    File.open('/etc/apt/sources.list', 'r') do |f1|  
+      while line = f1.gets  
+        if /^deb\s.*/ =~ line then
+          sources << line.strip
+        end
+      end  
+    end
+  rescue
+    # I guess it doesn't exist...
+  end
   puts("#{sources.length} sources loaded")
   return sources
 end
@@ -43,7 +68,7 @@ def load_gem_packages()
   found_packages = []
   prev_count = 0
   ["gem", "gem2.0"].each{ |gemname| 
-    execute("#{gemname} list --local").split("\n").each{ |gemline|
+    execute("#{gemname} list --local", false).split("\n").each{ |gemline|
       if /(?<name>^[a-zA-Z0-9.+_-]+) \((?<version>[0-9.]+)\)/ =~ gemline then
         found_packages << [gemname, name, version]
       else
@@ -56,9 +81,23 @@ def load_gem_packages()
   return found_packages
 end
 
+def load_choco_packages()
+  found_packages = []
+  execute("choco list -lo", false).split("\n").each{ |chocoline|
+    if /(?<name>^[a-zA-Z0-9.+_-]+) (?<version>[0-9.]+)/ =~ chocoline then
+      found_packages << ['choco', name, version]
+    else
+      puts("Unparsed line: #{chocoline}")
+    end
+  }
+  puts("#{found_packages.length} choco packages found")
+  return found_packages
+end
+
+
 def load_apt_packages()
   found_packages = []
-  execute("apt list --installed").split("\n").each{ |aptline|
+  execute("apt list --installed", false).split("\n").each{ |aptline|
 #    puts("'#{aptline}'")
     if /(?<name>^[a-zA-Z0-9.+_-]+)\/(?<source>\S*) ([0-9]+:)?(?<version>[0-9.]+).*/ =~ aptline then
 #      puts("'#{aptline}': '#{name}' '#{source}' '#{version}'")
@@ -75,7 +114,7 @@ def load_pip_packages()
   found_packages = []
   prev_count = 0
   ["pip", "pip2"].each{ |pipname| 
-    execute("#{pipname} list").split("\n").each{ |pipline|
+    execute("#{pipname} list", false).split("\n").each{ |pipline|
       if /(?<name>^[a-zA-Z0-9.+_-]+) \((?<version>[0-9.]+).*\)/ =~ pipline then
         found_packages << [pipname, name, version]
       else
@@ -89,20 +128,137 @@ def load_pip_packages()
 end
 
 
-found_packages = load_gem_packages()
-found_packages.concat(load_apt_packages())
-found_packages.concat(load_pip_packages())
-
-apt_keys = load_apt_keys()
-apt_sources = load_apt_sources()
-
 # puts("Found Packages: #{found_packages}")
 
 needed_packages = []
 
-linux["packages"].each { |package|
+config["packages"].each { |package|
   needed_packages << [package["source"], package["name"], package["version"], package["url"], package["check_file"], package["script"]]
 }
+
+
+def install_apt_sources(sources, apt_keys, apt_sources)
+  did_something = false 
+  if sources == nil then
+    return
+  end
+
+  sources.each { |source| 
+    if !apt_keys.include?(source["id"]) then
+      execute("wget -O - #{source["key"]} | #{SUDO_TOOL} apt-key add -")
+      did_something = true
+    end
+
+    if !apt_sources.include?(source["repository"]) then
+      execute("#{SUDO_TOOL} apt-add-repository '#{source["repository"]}'")
+      did_something = true
+    end
+  }
+
+  if did_something then
+    execute("#{SUDO_TOOL} apt-get update")
+  end
+end
+
+def install_apt(to_install)
+  apt_string = "#{SUDO_TOOL} apt-get --yes install "
+  something_to_do = false
+  to_install.each{ |package| 
+    if package[0] == "apt" then
+      something_to_do = true
+      apt_string += package[1]
+      if package[2] != nil then
+        apt_string += "=#{package[2]}"
+      end
+      apt_string += " "
+    end
+  }  
+
+  if something_to_do then
+    # we need to pre-accept the mscorefont eula to be able to install this automagically
+    execute("echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | #{SUDO_TOOL} debconf-set-selections")
+    execute("echo ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note | #{SUDO_TOOL} debconf-set-selections")
+    puts(execute("#{apt_string}"))
+  else
+    puts("No apt packages to install")
+  end
+end
+
+def install_dpkg(to_install)
+  to_install.each{ |package| 
+    if package[0] == "dpkg" then
+      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget \"$URL\" -qO $FILE && #{SUDO_TOOL} dpkg -i $FILE; rm $FILE"))
+    end
+  }  
+end
+
+def install_script(to_install)
+  to_install.each{ |package|
+    if package[0] == "script" then
+      puts(execute(package[5]))
+    end
+  }
+end
+
+def install_choco(to_install)
+  Tempfile.create(["packages", ".config"]) { |file|
+    file.write("<?xml version='1.0' encoding='utf-8'?>\n")
+    file.write("<packages>\n")
+    something_to_do = false
+    to_install.each{ |package| 
+      if package[0] == "choco" then
+        something_to_do = true
+	file.write("<package id='" + package[1] + "'")
+        if package[2] != nil then
+          file.write(" version='" + package[2] + "'")
+        end
+	file.write(" />\n")
+      end
+    }
+    file.write("</packages>\n");
+    file.close()
+
+    if something_to_do then
+      puts(execute("#{SUDO_TOOL} choco install --yes --acceptlicense #{file.path}"))
+    end
+  }
+end
+
+def install_gem_pip(to_install)
+
+  ["gem", "gem2.0", "pip", "pip2"].each{ |gemname| 
+    if GEM_NEEDS_SUDO || PIP_NEEDS_SUDO then
+      gem_string = SUDO_TOOL
+    else 
+      gem_string = ""
+    end
+
+    gem_string = "#{gem_string} #{gemname} install "
+    something_to_do = false
+    to_install.each{ |package| 
+      if package[0] == gemname then
+        something_to_do = true
+        gem_string += package[1]
+        if package[2] != nil then
+          gem_string += "=#{package[2]}"
+        end
+        gem_string += " "
+      end
+    } 
+    if something_to_do then
+      puts(execute("#{gem_string}"))
+    else
+      puts("No #{gemname} packages to install")
+    end
+  } 
+
+end
+  
+found_packages = load_gem_packages()
+found_packages.concat(load_apt_packages())
+found_packages.concat(load_pip_packages())
+found_packages.concat(load_choco_packages())
+
 
 to_install = []
 
@@ -131,98 +287,16 @@ needed_packages.each{ |needed|
   end
 }
 
-def install_apt_sources(sources, apt_keys, apt_sources)
-  did_something = false 
-  sources.each { |source| 
-    if !apt_keys.include?(source["id"]) then
-      execute("wget -O - #{source["key"]} | sudo apt-key add -")
-      did_something = true
-    end
 
-    if !apt_sources.include?(source["repository"]) then
-      execute("sudo apt-add-repository '#{source["repository"]}'")
-      did_something = true
-    end
-  }
 
-  if did_something then
-    execute("sudo apt-get update")
-  end
-end
+apt_keys = load_apt_keys()
+apt_sources = load_apt_sources()
 
-install_apt_sources(linux["apt-sources"], apt_keys, apt_sources)
-
-def install_apt(to_install)
-  apt_string = "sudo apt-get --yes install "
-  something_to_do = false
-  to_install.each{ |package| 
-    if package[0] == "apt" then
-      something_to_do = true
-      apt_string += package[1]
-      if package[2] != nil then
-        apt_string += "=#{package[2]}"
-      end
-      apt_string += " "
-    end
-  }  
-
-  if something_to_do then
-    # we need to pre-accept the mscorefont eula to be able to install this automagically
-    execute("echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections")
-    execute("echo ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note | sudo debconf-set-selections")
-    puts(execute("#{apt_string}"))
-  else
-    puts("No apt packages to install")
-  end
-end
-
+install_apt_sources(config["apt-sources"], apt_keys, apt_sources)
 install_apt(to_install)
-
-def install_dpkg(to_install)
-  to_install.each{ |package| 
-    if package[0] == "dpkg" then
-      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget \"$URL\" -qO $FILE && sudo dpkg -i $FILE; rm $FILE"))
-    end
-  }  
-end
-
+install_choco(to_install)
 install_dpkg(to_install)
-
-def install_script(to_install)
-  to_install.each{ |package|
-    if package[0] == "script" then
-      puts(execute(package[5]))
-    end
-  }
-end
-
 install_script(to_install)
-
-
-def install_gem_pip(to_install)
-
-  ["gem", "gem2.0", "pip", "pip2"].each{ |gemname| 
-    gem_string = "sudo #{gemname} install "
-    something_to_do = false
-    to_install.each{ |package| 
-      if package[0] == gemname then
-        something_to_do = true
-        gem_string += package[1]
-        if package[2] != nil then
-          gem_string += "=#{package[2]}"
-        end
-        gem_string += " "
-      end
-    } 
-    if something_to_do then
-      puts(execute("#{gem_string}"))
-    else
-      puts("No #{gemname} packages to install")
-    end
-  } 
-
-end
-  
 install_gem_pip(to_install)
 
 

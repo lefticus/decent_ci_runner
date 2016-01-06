@@ -1,16 +1,17 @@
 
 
-if [ `uname` -eq "Linux" ]
+if [ `uname` == "Linux" ]
 then
   linux/bootstrap.sh
   RUBY=ruby2.0
-elsif [ `uname` -eq "Darwin" ]
+elif [ `uname` == "Darwin" ]
+then
   macos/bootstrap.sh
   RUBY=ruby
 else
   windows/bootstrap.sh
   RUBY=ruby
-end
+fi
 
 $RUBY verifyenv.rb
 

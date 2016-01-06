@@ -6,10 +6,4 @@ packages:
   - name: PyGithub
     source: pip
 
-  - name: octokit
-    source: gem2.0
-  - name: activesupport
-    source: gem2.0
-  - name: le
-    source: gem2.0
 

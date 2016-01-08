@@ -1,0 +1,45 @@
+packages:
+  - name: Wget
+    source: choco
+  - name: octokit
+    source: gem
+  - name: activesupport
+    source: gem
+  - name: le
+    source: gem
+  - name: python2
+    source: choco
+  - name: pip
+    source: choco
+  - name: cmake.portable
+    source: choco
+  - name: pandoc
+    source: choco
+  - name: wkhtmltopdf
+    source: choco
+  - name: nsis
+    source: choco
+  - name: VisualStudioCommunity2013
+    version: 12.0.31101.0
+    source: choco
+  - name: EnergyPlus
+    source: script
+    script: bash -c "wget https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
+    check_file: "c:/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp"
+
+  - name: Qt
+    source: script
+    script: bash -c "wget http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe -qO /tmp/qt-unified-windows-x86-online.exe && elevate -w /tmp/qt-unified-windows-x86-online.exe ; rm  /tmp/qt-unified-windows-x86-online.exe "
+    check_file: [ "c:/Qt/5.3/msvc2013_64_opengl", "c:/Qt/5.3/msvc2013_opengl" ]
+
+  - name: boost
+    source: script
+    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
+    check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
+
+  - name: boost
+    source: script
+    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
+    check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
+
+

@@ -1,4 +1,3 @@
-
 require 'yaml'
 require 'set'
 require 'tempfile'
@@ -12,22 +11,37 @@ if /.*linux.*/i =~ RUBY_PLATFORM
   PIP_NEEDS_SUDO=true
 elsif /.*win.*/i =~ RUBY_PLATFORM || /.*mingw.*/i =~ RUBY_PLATFORM 
   config = YAML.load_file("windows/packages.yaml")
-  SUDO_TOOL="elevate -k -w "
+  SUDO_TOOL="elevate -c -w "
   GEM_NEEDS_SUDO=false
   PIP_NEEDS_SUDO=false
 end
 
 config["packages"].concat(yml["packages"])
 
+# puts("Found Packages: #{found_packages}")
+
+needed_packages = []
+
+config["packages"].each { |package|
+  if package["check_file"].kind_of?(Array) then
+    check_files = package["check_file"]
+  else
+    check_files = [package["check_file"]]
+  end
+
+  needed_packages << [package["source"], package["name"], package["version"], package["url"], check_files, package["script"]]
+}
+
 
 def execute(string, critical=true)
   puts("Executing: '#{string}'")
   begin 
     return `#{string}`
-  rescue
+  rescue => e
     if critical then
       raise
     else
+      puts("Error during execution: #{e}")
       return ""
     end
   end
@@ -127,14 +141,6 @@ def load_pip_packages()
   return found_packages
 end
 
-
-# puts("Found Packages: #{found_packages}")
-
-needed_packages = []
-
-config["packages"].each { |package|
-  needed_packages << [package["source"], package["name"], package["version"], package["url"], package["check_file"], package["script"]]
-}
 
 
 def install_apt_sources(sources, apt_keys, apt_sources)
@@ -266,9 +272,8 @@ needed_packages.each{ |needed|
   is_installed = false
   if needed[0] == "script" then
     puts("checking script object: #{needed}")
-    if File.exist?(needed[4]) then
-      is_installed = true
-    end
+
+    is_installed = needed[4].all? { |filename| File.exist?(filename) }
   else
     found_packages.each{ |found|
       if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1] == found[1] then
@@ -299,4 +304,10 @@ install_dpkg(to_install)
 install_script(to_install)
 install_gem_pip(to_install)
 
+if !to_install.empty? then
+  puts "Something was installed, you must restart from a new console"
+  exit 1
+else
+  exit 0
+end
 

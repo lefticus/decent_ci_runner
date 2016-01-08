@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # exit status of 0 means nothing happened, continue as normal
 # exit status of 1 means something was installed, and restarting the script is necessary
@@ -9,21 +10,23 @@ net session >nul 2>&1
 
 if [ $? -eq 0 ]
 then
+  echo "IS ADMIN"
   ISADMIN=1
 else
   ISADMIN=0
 fi
 
-which choco
+command -v choco
 
 if [ $? -eq 0 ]
 then
+  echo "HAS CHOCO"
   HAS_CHOCO=1
 else
   HAS_CHOCO=0
 fi
 
-which ruby
+command -v ruby
 
 if [ $? -eq 0 ]
 then
@@ -33,7 +36,7 @@ else
 fi
 
 
-which elevate
+command -v elevate
 
 if [ $? -eq 0 ]
 then
@@ -44,12 +47,14 @@ fi
 
 
 
-if [ ! $HAS_CHOCO ]
+if [ $HAS_CHOCO -eq 0 ]
 then
-  if [ $ISADMIN ]
+  if [ $ISADMIN -eq 1 ]
   then
+
+
     echo "Installing chocolatey https://chocolatey.org"
-    cmd //C "@powershell -NoProfile -ExecutionPolicy Bypass -Command \"iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))\" "
+    echo "" | powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
   else
     echo "You must run this process from an administrative bash console to install chocolately"
     exit 2
@@ -61,7 +66,7 @@ then
   if [ $ISADMIN ]
   then
     echo "Installing the 'elevate' and 'ruby' tool https://chocolatey.org/packages/elevate.native"
-    $ALLUSERSPROFILE\\chocolatey\\bin\\choco install elevate.native ruby
+    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense elevate.native ruby
     exit 1
   else
     echo "You must run this process from an administrative bash console to install 'elevate' and 'ruby'"

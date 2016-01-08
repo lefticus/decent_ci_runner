@@ -42,7 +42,10 @@ case "$?" in
 
 0)  echo bootstrap success
     ;;
-1)  echo tools installed, restart necessary
+1)  echo ""
+    echo *********************************************************************
+    echo tools installed, you must exit this bash window and restart the setup
+    echo *********************************************************************
     exit 1
     ;;
 2)  exit 1
@@ -57,7 +60,10 @@ case "$?" in
 0)  echo setup success
     exit 0
     ;;
-1)  echo tools installed, restart necessary
+1)  echo ""
+    echo *********************************************************************
+    echo tools installed, you must exit this bash window and restart the setup
+    echo *********************************************************************
     exit 1
     ;;
 

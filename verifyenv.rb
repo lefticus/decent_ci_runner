@@ -29,7 +29,7 @@ config["packages"].each { |package|
     check_files = [package["check_file"]]
   end
 
-  needed_packages << [package["source"], package["name"], package["version"], package["url"], check_files, package["script"]]
+  needed_packages << [package["source"], package["name"], package["version"], package["url"], check_files, package["script"], package["message"]]
 }
 
 
@@ -45,6 +45,10 @@ def execute(string, critical=true)
       return ""
     end
   end
+end
+
+def show_message(string)
+  execute("echo \"\" | powershell -C \"[System.Reflection.Assembly]::LoadWithPartialName(\\\"System.Windows.Forms\\\"); [System.Windows.Forms.MessageBox]::Show(\\\"#{string}\\\") ")
 end
 
 def load_apt_keys()
@@ -201,6 +205,10 @@ end
 def install_script(to_install)
   to_install.each{ |package|
     if package[0] == "script" then
+      if !package[6].nil? then
+        show_message(package[6])
+      end
+
       puts(execute(package[5]))
     end
   }

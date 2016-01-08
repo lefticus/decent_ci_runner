@@ -26,20 +26,30 @@ packages:
     source: script
     script: bash -c "wget https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
     check_file: "c:/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp"
+    message: "Accept default settings for installing EnergyPlus"
 
   - name: Qt
     source: script
     script: bash -c "wget http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe -qO /tmp/qt-unified-windows-x86-online.exe && elevate -w /tmp/qt-unified-windows-x86-online.exe ; rm  /tmp/qt-unified-windows-x86-online.exe "
     check_file: [ "c:/Qt/5.3/msvc2013_64_opengl", "c:/Qt/5.3/msvc2013_opengl" ]
+    message: "Make sure msvc2013 opengl 64bit & 32bit are selected"
 
   - name: boost
     source: script
     script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
     check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
+    message: "Accept default settings for installing boost 32bit"
 
   - name: boost
     source: script
     script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
     check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
+    message: "Accept default settings for installing boost 64bit"
+
+  - name: mingw
+    source: script
+    script:  bash -c "wget http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download -qO /tmp/mingw-get-setup.exe && elevate -w /tmp/mingw-get-setup.exe ; rm  /tmp/mingw-get-setup.exe"
+    check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
+    message: "Make sure gfortran and base are selected"
 
 

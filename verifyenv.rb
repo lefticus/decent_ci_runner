@@ -9,12 +9,24 @@ if /.*linux.*/i =~ RUBY_PLATFORM
   SUDO_TOOL="sudo"
   GEM_NEEDS_SUDO=true
   PIP_NEEDS_SUDO=true
+  run_apt = true
+  run_choco = false
 elsif /.*win.*/i =~ RUBY_PLATFORM || /.*mingw.*/i =~ RUBY_PLATFORM 
   config = YAML.load_file("windows/packages.yaml")
   SUDO_TOOL="elevate -c -w "
   GEM_NEEDS_SUDO=false
   PIP_NEEDS_SUDO=false
+  run_apt = false
+  run_choco = true
+else
+  config = YAML.load_file("macos/packages.yaml")
+  SUDO_TOOL="sudo"
+  GEM_NEEDS_SUDO=true
+  PIP_NEEDS_SUDO=true
+  run_apt = false
+  run_choco = false
 end
+
 
 config["packages"].concat(yml["packages"])
 
@@ -267,12 +279,19 @@ def install_gem_pip(to_install)
   } 
 
 end
+
   
 found_packages = load_gem_packages()
-found_packages.concat(load_apt_packages())
-found_packages.concat(load_pip_packages())
-found_packages.concat(load_choco_packages())
 
+if run_apt
+  found_packages.concat(load_apt_packages())
+end
+
+found_packages.concat(load_pip_packages())
+
+if run_choco
+  found_packages.concat(load_choco_packages())
+end
 
 to_install = []
 
@@ -301,14 +320,18 @@ needed_packages.each{ |needed|
 }
 
 
+if run_apt
+  apt_keys = load_apt_keys() 
+  apt_sources = load_apt_sources() 
+  install_apt_sources(config["apt-sources"], apt_keys, apt_sources) 
+  install_apt(to_install)
+  install_dpkg(to_install)
+end
 
-apt_keys = load_apt_keys()
-apt_sources = load_apt_sources()
+if run_choco
+  install_choco(to_install)
+end
 
-install_apt_sources(config["apt-sources"], apt_keys, apt_sources)
-install_apt(to_install)
-install_choco(to_install)
-install_dpkg(to_install)
 install_script(to_install)
 install_gem_pip(to_install)
 

@@ -17,7 +17,7 @@ else
   TOOL=curl
 fi
 
-
+echo "Executing with ruby: $RUBY"
 git status `pwd` > /dev/null
 
 
@@ -36,16 +36,17 @@ else
   BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/master
 fi
 
-bash <($TOOL $BASE/$RUNFILE)
+echo "executing: '$TOOL $BASE/$RUNFILE'"
+bash <($TOOL $BASE/$RUNFILE) $1
 
 case "$?" in
 
 0)  echo bootstrap success
     ;;
 1)  echo ""
-    echo *********************************************************************
+    echo "*********************************************************************"
     echo tools installed, you must exit this bash window and restart the setup
-    echo *********************************************************************
+    echo "*********************************************************************"
     exit 1
     ;;
 2)  exit 1
@@ -53,17 +54,34 @@ case "$?" in
 
 esac
 
-$RUBY verifyenv.rb
+if [ $ISGITFOLDER -eq 1 ]
+then
+  echo "Executing decent_ci_runner from $BASE"
+  $RUBY $BASE/verifyenv.rb $1
+  COMMAND_RESULT=$?
+else
+  DIR=`mktemp -d`
+  pushd $DIR
+  echo "Checkout out decent_ci_runner to $DIR for execution"
+  git checkout https://github.com/lefticus/decent_ci_runner
+  pushd decent_ci_runner
+  $RUBY ./verifyenv.rb $1
+  COMMAND_RESULT=$?
+  popd
+  popd
+  rm -rf $DIR
+fi
 
-case "$?" in
+
+case "$COMMAND_RESULT" in
 
 0)  echo setup success
     exit 0
     ;;
 1)  echo ""
-    echo *********************************************************************
+    echo "*********************************************************************"
     echo tools installed, you must exit this bash window and restart the setup
-    echo *********************************************************************
+    echo "*********************************************************************"
     exit 1
     ;;
 

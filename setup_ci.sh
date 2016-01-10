@@ -63,7 +63,7 @@ else
   DIR=`mktemp -d`
   pushd $DIR
   echo "Checkout out decent_ci_runner to $DIR for execution"
-  git checkout https://github.com/lefticus/decent_ci_runner
+  git clone https://github.com/lefticus/decent_ci_runner
   pushd decent_ci_runner
   $RUBY ./verifyenv.rb $1
   COMMAND_RESULT=$?

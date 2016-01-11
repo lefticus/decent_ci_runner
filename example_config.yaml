@@ -1,0 +1,13 @@
+
+run_dir: "/home/jason/decent_ci_run_dir"
+environment: 
+#  DECENT_CI_SKIP_DAILY_TASKS: false
+#  DECENT_CI_SKIP_TEST: false
+  DECENT_CI_BRANCH_FILTER: ".*"
+  DECENT_CI_COMPILER_FILTER: ".*"
+test_mode: true
+github_token: "ABCDEF1234567890"
+options:
+  - "--no-verbose"
+repositories:
+  - "lefticus/cpp_project_with_errors"  

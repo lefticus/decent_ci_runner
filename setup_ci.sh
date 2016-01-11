@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "$0 installdeps: '$1'"
 
 if [ `uname` == "Linux" ]
 then
@@ -23,8 +24,10 @@ git status `pwd` > /dev/null
 
 if [ $? -eq 0 ]
 then
+  echo "Running from git folder"
   ISGITFOLDER=1
 else
+  echo "NOT Running from git folder"
   ISGITFOLDER=0
 fi
 

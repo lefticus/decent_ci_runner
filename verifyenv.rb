@@ -319,6 +319,10 @@ needed_packages.each{ |needed|
   end
 }
 
+if !to_install.empty? and ARGV[0] != "true"
+  puts "Dependency installation disabled, exiting"
+  exit 1
+end
 
 if run_apt
   apt_keys = load_apt_keys() 

@@ -5,6 +5,10 @@ apt-sources:
     id: AF4F7421
 
 packages:
+  - name: ruby
+    source: apt
+  - name: ruby-dev
+    source: apt
   - name: dpkg-dev 
     source: apt
   - name: git 
@@ -74,5 +78,7 @@ packages:
   - name: activesupport
     source: gem2.0
   - name: le
+    source: gem2.0
+  - name: deep_merge
     source: gem2.0
 

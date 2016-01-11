@@ -1,51 +1,84 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
+require 'yaml'
+require 'deep_merge'
 
-if ARGV.length < 4
-  puts "Usage: #{__FILE__} <buildfolder> [options] <testruntrueorfalse> <githubtoken> <repositoryname> (<repositoryname> ...)"
+if ARGV.length < 1
+  puts "Usage: #{__FILE__} <config_file>"
   abort("Not enough arguments")
 end
 
 puts "starting CI system"
 
+begin
+  puts "Loading configuration file from : '#{ARGV[0]}'"
+  config = YAML.load_file("#{ARGV[0]}")
 
-while true
-  begin 
-    puts "Creating folder #{ARGV[0]}"
-    FileUtils.mkdir_p(ARGV[0])
-    puts "Cleaning up old decent_ci folder"
-    FileUtils.rm_rf("#{ARGV[0]}/decent_ci")
-    puts "Changing to folder #{ARGV[0]}"
-    FileUtils.cd(ARGV[0])
 
-    break
-  rescue => e 
-    puts "Error setting up build folders, sleeping and trying again"
-    sleep 120
+  if !config["remote_config_url"].nil?
+    puts "Merging remote configuration file from : '#{config["remote_config_url"]}'"
+    yml = YAML.load(`curl #{config["remote_config_url"]}`)
+    config.deep_merge!(yaml)
   end
-end
 
-while !system("git clone https://github.com/lefticus/decent_ci")
-  puts "Unable to clone decent_ci repository. Sleeping and trying again";
-  sleep 120
-end
 
-puts "Successfully cloned decent_ci repository."
+  if !config["pause"].nil? and config["pause"] then
+    puts "Configuration has this system paused"
+    exit
+  end 
 
-while true
-  puts "Updating decent_ci"
-  if system("cd decent_ci && git pull")
-    puts "Running ci.rb"
-    ci_args = ARGV[1..-1]
-    if !system("#{RbConfig.ruby}", "decent_ci/ci.rb", *ci_args)
-      puts "Unable to execute ci.rb script"
+  run_dir = config["run_dir"]
+
+  if run_dir.nil? || run_dir=="" then
+    puts "No run_dir configured"
+    exit
+  end  
+
+  puts "Environment: #{config["environment"]}"
+  merged_env = ENV.to_hash.merge(config["environment"].nil? ? Hash.new() : config["environment"])
+  puts "Merged Environment: #{merged_env}"
+  puts "options: #{config["options"]}"
+
+  while true
+    begin
+      puts "Creating folder #{run_dir}"
+      FileUtils.mkdir_p(run_dir)
+#      puts "Cleaning up old decent_ci folder"
+#      FileUtils.rm_rf("#{run_dir}/decent_ci")
+      puts "Changing to folder #{run_dir}"
+      FileUtils.cd(run_dir)
+
+      break
+    rescue => e 
+      puts "Error setting up build folders, sleeping and trying again"
+      sleep 120
+    end
+  end
+
+  if File.directory?("decent_ci") 
+    FileUtils.cd("decent_ci")
+    while !system("git pull")
+      puts "Unable to update decent_ci repository. Sleeping and trying again";
+      sleep 120
     end
   else
-    puts "Unable to update decent_ci repository"
+    while !system("git clone https://github.com/lefticus/decent_ci")
+      puts "Unable to clone decent_ci repository. Sleeping and trying again";
+      sleep 120
+    end
   end
 
-  puts "Sleeping"
-  sleep(300)
+  puts "Successfully cloned decent_ci repository."
+
+
+  puts "Running ci.rb"
+  if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
+    puts "Unable to execute ci.rb script"
+  end
+
+rescue => e
+  puts "Error setting up build environment #{e}"
 end
+
 

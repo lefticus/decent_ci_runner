@@ -42,14 +42,16 @@ do
 
   if [ $? -eq 0 ]
   then
-    echo "Executing $BASE/run_ci.rb"
+    echo "Executing $BASE/decent_ci_run.rb"
     RUBY_FILE=`mktemp`
-    $TOOL $BASE/run_ci.rb > $RUBY_FILE
+    $TOOL $BASE/decent_ci_run.rb > $RUBY_FILE
     ruby $RUBY_FILE $1 $2
     rm $RUBY_FILE
+    echo "Build finished, sleeping"
   else
     echo "Setup process was unable to complete, sleeping"
-    sleep 300
   fi
+
+  sleep 300
 done
 

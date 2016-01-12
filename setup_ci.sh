@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "$0 installdeps: '$1'"
+echo "$0 installdeps: '$1' runonboot: '$2'"
 
 if [ `uname` == "Linux" ]
 then
@@ -57,11 +57,38 @@ case "$?" in
 
 esac
 
+
+
+function runonboot  {
+  echo "runonboot '$1' '$2'"
+  if [ $1 -eq 0 ]
+  then
+    if [ "$2" == "true" ]
+    then
+      if [ `uname` == "Linux" ]
+      then
+        # linux - rc script
+        sudo cp decent_ci /etc/init.d/decent_ci
+        sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
+        sudo ln -s /etc/init.d/decent_ci /etc/rc5.d/decent_ci
+      elif [ `uname` == "Darwin" ]
+      then
+        # macos - use launchd
+        echo "macos"
+      else
+        # windows - install via win32
+        echo "windows"
+      fi
+    fi
+  fi
+}
+
 if [ $ISGITFOLDER -eq 1 ]
 then
   echo "Executing decent_ci_runner from $BASE"
   $RUBY $BASE/verifyenv.rb $1
   COMMAND_RESULT=$?
+  runonboot $COMMAND_RESULT $2
 else
   DIR=`mktemp -d`
   pushd $DIR
@@ -70,6 +97,7 @@ else
   pushd decent_ci_runner
   $RUBY ./verifyenv.rb $1
   COMMAND_RESULT=$?
+  runonboot $COMMAND_RESULT $2
   popd
   popd
   rm -rf $DIR

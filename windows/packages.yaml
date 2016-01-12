@@ -19,6 +19,8 @@ packages:
     source: choco
   - name: nsis
     source: choco
+  - name: NSSM
+    source: choco
   - name: VisualStudioCommunity2013
     version: 12.0.31101.0
     source: choco
@@ -53,6 +55,4 @@ packages:
     message: "Make sure gfortran and base are selected"
 
 
-  - name: win32-service
-    source: gem
 

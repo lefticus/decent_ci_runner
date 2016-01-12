@@ -78,6 +78,7 @@ function runonboot  {
       else
         # windows - install via win32
         echo "windows"
+	ruby installwin32service.rb
       fi
     fi
   fi

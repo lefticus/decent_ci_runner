@@ -53,3 +53,6 @@ packages:
     message: "Make sure gfortran and base are selected"
 
 
+  - name: win32-service
+    source: gem
+

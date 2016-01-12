@@ -69,7 +69,7 @@ function runonboot  {
       then
         # linux - rc script
         sudo cp decent_ci /etc/init.d/decent_ci
-        sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
+        sudo update-rc.d decent_ci defaults
         sudo ln -s /etc/init.d/decent_ci /etc/rc5.d/decent_ci
       elif [ `uname` == "Darwin" ]
       then

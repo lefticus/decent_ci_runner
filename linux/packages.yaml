@@ -59,6 +59,10 @@ packages:
     source: apt
   - name: xfonts-75dpi
     source: apt
+  - name: wget
+    source: apt
+  - name: curl
+    source: apt
 
   - name: EnergyPlus
     source: script

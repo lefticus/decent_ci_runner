@@ -6,12 +6,12 @@ if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh
   RUBY=ruby2.0
-  TOOL=curl
+  TOOL=wget
 elif [ `uname` == "Darwin" ]
 then
   RUNFILE=macos/bootstrap.sh
   RUBY=ruby
-  TOOL=wget
+  TOOL=curl
 else
   RUNFILE=windows/bootstrap.sh
   RUBY=ruby

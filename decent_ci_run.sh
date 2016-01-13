@@ -13,10 +13,10 @@ fi
 
 if [ `uname` == "Linux" ]
 then
-  TOOL=curl
+  TOOL=wget
 elif [ `uname` == "Darwin" ]
 then
-  TOOL=wget
+  TOOL=curl
 else
   TOOL=curl
 fi

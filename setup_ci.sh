@@ -91,7 +91,7 @@ then
   COMMAND_RESULT=$?
   runonboot $COMMAND_RESULT $2
 else
-  DIR=`mktemp -d`
+  DIR=`mktemp -d decent_ci_runner.XXXXXX`
   pushd $DIR
   echo "Checkout out decent_ci_runner to $DIR for execution"
   git clone https://github.com/lefticus/decent_ci_runner

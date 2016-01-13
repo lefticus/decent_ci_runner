@@ -43,7 +43,7 @@ do
   if [ $? -eq 0 ]
   then
     echo "Executing $BASE/decent_ci_run.rb"
-    RUBY_FILE=`mktemp`
+    RUBY_FILE=`mktemp decent_ci_run.rb.XXXXXX`
     $TOOL $BASE/decent_ci_run.rb > $RUBY_FILE
     ruby $RUBY_FILE $1 $2
     rm $RUBY_FILE

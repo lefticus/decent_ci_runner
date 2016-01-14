@@ -19,7 +19,7 @@ packages:
 
   - name: packagemaker
     source: script
-    script: echo "**** You must manually PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'"
+    script: echo "**** You must install manually PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'"
     check_file: /Applications/PackageMaker.app
 
 
@@ -27,6 +27,14 @@ packages:
     source: script
     script: FILE=`mktemp gfortranXXXXXX`; curl http://coudert.name/software/gfortran-4.9.0-Mavericks.dmg -o $FILE && hdiutil attach $FILE && sudo installer -pkg /Volumes/gfortran-4.9.0-Mavericks/gfortran.pkg -target "/" && hdiutil detach /Volumes/gfortran-4.9.0-Mavericks ; rm $FILE
     check_file: /usr/local/gfortran
+
+
+  - name: Qt
+    source: script
+    script: FILE=`mktemp qtXXXXXX`; curl http://download.qt.io/archive/qt/5.3/5.3.2/qt-opensource-mac-x64-clang-5.3.2.dmg -o $FILE && hdiutil attach $FILE && sudo installer -pkg /Volumes/qt-opensource-mac-x64-clang-5.3.2/qt-opensource-mac-x64-clang-5.3.2.pkg -target "/" && hdiutil detach /Volumes/qt-opensource-mac-x64-clang-5.3.2 ; rm $FILE
+    check_file: qt
+    check_file: we actually need to check the path too
+
 
 
 

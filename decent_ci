@@ -1,0 +1,33 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          decent_ci 
+# Required-Start:    $remote_fs $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Executes the decent_ci system as a daemon
+### END INIT INFO
+
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+
+case "$1" in
+    start)
+    	start-stop-daemon --start --background --exec /etc/init.d/decent_ci -- background
+        ;;
+    background)
+        /usr/local/bin/decent_ci_run.sh /usr/local/etc/decent_ci_config.yaml false
+	;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+        ;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac

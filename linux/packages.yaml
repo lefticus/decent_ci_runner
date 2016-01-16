@@ -5,6 +5,10 @@ apt-sources:
     id: AF4F7421
 
 packages:
+  - name: g++-4.8
+    source: apt
+  - name: libc++-dev
+    source: apt
   - name: ruby
     source: apt
   - name: ruby-dev

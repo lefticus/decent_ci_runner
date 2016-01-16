@@ -93,9 +93,44 @@ function runonboot  {
         then 
           sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml
         fi
-        sudo cp com.emptycrate.decent_ci_runner.plist /usr/local/etc/com.emptycrate.decent_ci_runner.plist
-        launchctl unload /usr/local/etc/com.emptycrate.decent_ci_runner.plist
-        launchctl load /usr/local/etc/com.emptycrate.decent_ci_runner.plist
+
+        PLIST=`mktemp plist.XXXXXX`
+        echo "<?xml version='1.0' encoding='UTF-8'?>" > $PLIST
+        echo "<!DOCTYPE plist PUBLIC '-//Apple//DTD PLIST 1.0//EN' 'http://www.apple.com/DTDs/PropertyList-1.0.dtd'>" >> $PLIST
+        echo "<plist version='1.0'>" >> $PLIST
+        echo "  <dict>" >> $PLIST
+        echo "    <key>Label</key>" >> $PLIST
+        echo "    <string>com.emptycrate.decent_ci_runner</string>" >> $PLIST
+        echo "    <key>ProgramArguments</key>" >> $PLIST
+        echo "    <array>" >> $PLIST
+        echo "      <string>/usr/local/bin/decent_ci_run.sh</string>" >> $PLIST
+        echo "      <string>/usr/local/etc/decent_ci_config.yaml</string>" >> $PLIST
+        echo "      <string>false</string>" >> $PLIST
+        echo "    </array>" >> $PLIST
+        echo "    <key>RunAtLoad</key>" >> $PLIST
+        echo "    <true/>" >> $PLIST
+#        echo "    <key>StandardOutPath</key>" >> $PLIST
+#        echo "    <string>/Users/jason/stdout</string> " >> $PLIST   
+        echo "    <key>WorkingDirectory</key>" >> $PLIST
+        echo "    <string>$HOME</string>" >> $PLIST
+        echo "    <key>UserName</key>" >> $PLIST
+        echo "    <string>$USER</string>" >> $PLIST
+        echo "    <key>EnvironmentVariables</key>" >> $PLIST
+        echo "    <dict>" >> $PLIST
+        echo "      <key>PATH</key>" >> $PLIST
+        echo "      <string>$PATH</string>" >> $PLIST
+        echo "    </dict>" >> $PLIST
+        echo "    <key>KeepAlive</key>" >> $PLIST
+        echo "    <true/>" >> $PLIST
+        echo "  </dict>" >> $PLIST
+        echo "</plist>" >> $PLIST
+
+        sudo cp $PLIST /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
+ 
+        rm $PLIST
+
+        launchctl unload /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
+        launchctl load /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
         launchctl start com.emptycrate.decent_ci_runner
       else
         # windows - install via win32

@@ -43,7 +43,7 @@ begin
   while true
     begin
       puts "Creating folder #{run_dir}"
-      FileUtils.mkdir_p(run_dir)
+      FileUtils.mkdir_p(run_dir) unless File.exists?(run_dir)
 #      puts "Cleaning up old decent_ci folder"
 #      FileUtils.rm_rf("#{run_dir}/decent_ci")
       puts "Changing to folder #{run_dir}"

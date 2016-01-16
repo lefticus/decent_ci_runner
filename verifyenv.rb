@@ -11,20 +11,20 @@ if /.*linux.*/i =~ RUBY_PLATFORM
   PIP_NEEDS_SUDO=true
   run_apt = true
   run_choco = false
-elsif /.*win.*/i =~ RUBY_PLATFORM || /.*mingw.*/i =~ RUBY_PLATFORM 
-  config = YAML.load_file("windows/packages.yaml")
-  SUDO_TOOL="elevate -c -w "
-  GEM_NEEDS_SUDO=false
-  PIP_NEEDS_SUDO=false
-  run_apt = false
-  run_choco = true
-else
+elsif /.*darwin.*/i =~ RUBY_PLATFORM
   config = YAML.load_file("macos/packages.yaml")
   SUDO_TOOL="sudo"
   GEM_NEEDS_SUDO=true
   PIP_NEEDS_SUDO=true
   run_apt = false
   run_choco = false
+else
+  config = YAML.load_file("windows/packages.yaml")
+  SUDO_TOOL="elevate -c -w "
+  GEM_NEEDS_SUDO=false
+  PIP_NEEDS_SUDO=false
+  run_apt = false
+  run_choco = true
 end
 
 
@@ -48,7 +48,8 @@ config["packages"].each { |package|
 def execute(string, critical=true)
   puts("Executing: '#{string}'")
   begin 
-    return `#{string}`
+    result = `#{string}`
+    return result
   rescue => e
     if critical then
       raise
@@ -298,15 +299,19 @@ to_install = []
 needed_packages.each{ |needed|
   is_installed = false
   if needed[0] == "script" then
-    puts("checking script object: #{needed}")
+    print("checking script object: #{needed[1]}... ")
 
     is_installed = needed[4].all? { |filename| File.exist?(filename) }
+
+    if is_installed then
+      puts("FOUND")
+    else
+      puts("NOT FOUND")
+    end
   else
     found_packages.each{ |found|
       if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1] == found[1] then
-#        puts("needed[2]: #{needed[2]}  found[2]: #{found[2]}")
         if (needed[2] == nil || needed[2] == "" || needed[2] == found[2]) then
-#          puts("#{needed[1]} FOUND!!")
           is_installed = true
           break
         end

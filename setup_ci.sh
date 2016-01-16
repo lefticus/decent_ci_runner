@@ -74,13 +74,29 @@ function runonboot  {
       if [ `uname` == "Linux" ]
       then
         # linux - rc script
+        echo "Setting up rc.d Linux script"
         sudo cp decent_ci /etc/init.d/decent_ci
+        sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
+        if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
+        then 
+          sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml
+        fi
         sudo update-rc.d decent_ci defaults
-        sudo ln -s /etc/init.d/decent_ci /etc/rc5.d/decent_ci
       elif [ `uname` == "Darwin" ]
       then
         # macos - use launchd
-        echo "macos"
+        echo "Setting up launchd MacOS script"
+        sudo mkdir -p /usr/local/bin
+        sudo mkdir -p /usr/local/etc
+        sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
+        if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
+        then 
+          sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml
+        fi
+        sudo cp com.emptycrate.decent_ci_runner.plist /usr/local/etc/com.emptycrate.decent_ci_runner.plist
+        launchctl unload /usr/local/etc/com.emptycrate.decent_ci_runner.plist
+        launchctl load /usr/local/etc/com.emptycrate.decent_ci_runner.plist
+        launchctl start com.emptycrate.decent_ci_runner
       else
         # windows - install via win32
         echo "windows"
@@ -97,7 +113,13 @@ then
   COMMAND_RESULT=$?
   runonboot $COMMAND_RESULT $2
 else
-  DIR=`mktemp -d decent_ci_runner.XXXXXX`
+  if [ `uname` == "Darwin" ]
+  then
+    DIR=`mktemp -d $TMPDIR/decent_ci_runner.XXXXXX`
+  else
+    DIR=`mktemp -d decent_ci_runner.XXXXXX`
+  end
+
   pushd $DIR
   echo "Checkout out decent_ci_runner to $DIR for execution"
   git clone https://github.com/lefticus/decent_ci_runner

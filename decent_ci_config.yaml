@@ -3,6 +3,7 @@
 # On Linux copy into /usr/local/etc and update
 
 #run_dir: "C:/CI"
+#run_dir: /Users/jason/decent_ci_run_dir
 run_dir: "/home/jason/decent_ci_run_dir"
 environment: 
 #  DECENT_CI_SKIP_DAILY_TASKS: false
@@ -13,7 +14,8 @@ test_mode: true
 github_token: "ABCDEF1234567890"
 options:
   - "--no-verbose"
-  - "--disable-ssl-verification"
+# You probably want to uncomment this on Windows
+#  - "--disable-ssl-verification"
 repositories:
   - "NREL/EnergyPlus"  
 

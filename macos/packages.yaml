@@ -4,48 +4,40 @@ packages:
 
   - name: EnergyPlus
     source: script
-    script: FILE=`mktemp EnergyPlusXXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -o $FILE && hdiutil attach $FILE && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 ; rm $FILE
-    check_file: /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
+    script: FILE=`mktemp -d EnergyPlus.XXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -Lo $FILE/EnergyPlus.dmg && hdiutil attach $FILE/EnergyPlus.dmg && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 && sudo touch /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm -rf $FILE
+    check_file: /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
 
   - name: wkhtmltox
     source: script
-    script: FILE=`mktemp wkhtmltoxXXXXXX` && curl http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_osx-cocoa-x86-64.pkg -o $FILE &&  sudo installer -pkg $FILE -target "/"  ; rm $FILE
-    check_file: /Applications/wkhtmltopdf
+    script: FILE=`mktemp -d wkhtmltox.XXXXXX` && curl http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_osx-cocoa-x86-64.pkg -Lo $FILE/wkhtmltox.pkg &&  sudo installer -pkg $FILE/wkhtmltox.pkg -target "/"  ; rm -rf $FILE
+    check_file: /usr/local/bin/wkhtmltopdf
 
   - name: pandoc
     source: script
-    script: FILE=`mktemp pandocXXXXXX` && curl https://github.com/jgm/pandoc/releases/download/1.16.0.2/pandoc-1.16.0.2-osx.pkg -o $FILE &&  sudo installer -pkg $FILE -target "/"  ; rm $FILE
-    check_file: /Applications/pandoc
+    script: FILE=`mktemp -d pandoc.XXXXXX` && curl https://github.com/jgm/pandoc/releases/download/1.16.0.2/pandoc-1.16.0.2-osx.pkg -Lo $FILE/pandoc.pkg && sudo installer -pkg $FILE/pandoc.pkg -target "/"  ; rm -rf $FILE
+    check_file: /usr/local/bin/pandoc
 
   - name: packagemaker
     source: script
-    script: echo "**** You must install manually PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'"
+    script: "echo;echo;echo;echo;
+             echo \"************************************************************************************************************\";
+             echo \"You must install PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'\";
+             echo \"************************************************************************************************************\";
+             exit 1;"
     check_file: /Applications/PackageMaker.app
 
 
-  - name: EnergyPlus
+  - name: gfortran
     source: script
-    script: FILE=`mktemp gfortranXXXXXX`; curl http://coudert.name/software/gfortran-4.9.0-Mavericks.dmg -o $FILE && hdiutil attach $FILE && sudo installer -pkg /Volumes/gfortran-4.9.0-Mavericks/gfortran.pkg -target "/" && hdiutil detach /Volumes/gfortran-4.9.0-Mavericks ; rm $FILE
-    check_file: /usr/local/gfortran
+    script: FILE=`mktemp -d gfortran.XXXXXX`; curl http://coudert.name/software/gfortran-4.9.0-Mavericks.dmg -Lo $FILE/gfortran.dmg && hdiutil attach $FILE/gfortran.dmg && sudo installer -pkg /Volumes/gfortran-4.9.0-Mavericks/gfortran.pkg -target "/" && hdiutil detach /Volumes/gfortran-4.9.0-Mavericks ; rm -rf $FILE
+    check_file: /usr/local/bin/gfortran
 
 
-  - name: Qt
+  - name: cmake
     source: script
-    script: FILE=`mktemp qtXXXXXX`; curl http://download.qt.io/archive/qt/5.3/5.3.2/qt-opensource-mac-x64-clang-5.3.2.dmg -o $FILE && hdiutil attach $FILE && sudo installer -pkg /Volumes/qt-opensource-mac-x64-clang-5.3.2/qt-opensource-mac-x64-clang-5.3.2.pkg -target "/" && hdiutil detach /Volumes/qt-opensource-mac-x64-clang-5.3.2 ; rm $FILE
-    check_file: qt
-    check_file: we actually need to check the path too
-
-
-
-
-
-QQTTT!!!!
-
-
-    
-
-
-
+    script: FILE=`mktemp -d cmake.XXXXXX`; curl https://cmake.org/files/v3.4/cmake-3.4.1-Darwin-x86_64.dmg -Lo $FILE/cmake.dmg && yes | hdiutil attach $FILE/cmake.dmg && sudo cp -a /Volumes/cmake-3.4.1-Darwin-x86_64/CMake.app /Applications  && hdiutil detach /Volumes/cmake-3.4.1-Darwin-x86_64; sudo /Applications/CMake.app/Contents/bin/cmake-gui --install ; rm -rf $FILE
+    check_file: /usr/local/bin/cmake 
+    check_file: /Applications/CMake.app/Contents/bin/cmake
 
 
 

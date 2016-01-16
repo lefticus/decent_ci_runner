@@ -5,6 +5,8 @@ apt-sources:
     id: AF4F7421
 
 packages:
+  - name: libc++-dev
+    source: apt
   - name: ruby
     source: apt
   - name: ruby-dev

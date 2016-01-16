@@ -4,7 +4,7 @@
 
 if [ "$#" -ne 2 ]
 then
-  echo "Too few arguments, expected: $0 <configfile> <installdeps>"
+  echo "Wrong number arguments, expected: $0 <configfile> <installdeps>"
   exit 1
 else
   echo "Configfile: '$1', onlytestsetup '$2'"

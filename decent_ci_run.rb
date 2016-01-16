@@ -19,7 +19,7 @@ begin
   if !config["remote_config_url"].nil?
     puts "Merging remote configuration file from : '#{config["remote_config_url"]}'"
     yml = YAML.load(`curl #{config["remote_config_url"]}`)
-    config.deep_merge!(yaml)
+    config.deep_merge!(yml)
   end
 
 

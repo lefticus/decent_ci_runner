@@ -118,7 +118,7 @@ else
     DIR=`mktemp -d $TMPDIR/decent_ci_runner.XXXXXX`
   else
     DIR=`mktemp -d decent_ci_runner.XXXXXX`
-  end
+  fi
 
   pushd $DIR
   echo "Checkout out decent_ci_runner to $DIR for execution"

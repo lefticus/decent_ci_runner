@@ -43,7 +43,14 @@ do
   if [ $? -eq 0 ]
   then
     echo "Executing $BASE/decent_ci_run.rb"
-    RUBY_FILE=`mktemp decent_ci_run.rb.XXXXXX`
+
+    if [ `uname` == "Darwin" ]
+    then
+      RUBY_FILE=`mktemp $TMPDIR/decent_ci_run.rb.XXXXXX`
+    else
+      RUBY_FILE=`mktemp --tmpdir decent_ci_run.rb.XXXXXX`
+    fi
+
     $TOOL $BASE/decent_ci_run.rb > $RUBY_FILE
     ruby $RUBY_FILE $1 $2
     rm $RUBY_FILE

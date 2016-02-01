@@ -152,7 +152,7 @@ else
   then
     DIR=`mktemp -d $TMPDIR/decent_ci_runner.XXXXXX`
   else
-    DIR=`mktemp -d decent_ci_runner.XXXXXX`
+    DIR=`mktemp --tmpdir -d decent_ci_runner.XXXXXX`
   fi
 
   pushd $DIR

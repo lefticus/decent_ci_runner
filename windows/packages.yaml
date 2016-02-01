@@ -13,7 +13,6 @@ packages:
     source: choco
   - name: cmake.portable
     source: choco
-    version: 3.3.2
   - name: pandoc
     source: choco
   - name: wkhtmltopdf

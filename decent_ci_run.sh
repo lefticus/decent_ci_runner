@@ -18,7 +18,6 @@ elif [ `uname` == "Darwin" ]
 then
   TOOL=curl
 else
-  PATH=$PATH:/c/tools/python2/Scripts
   TOOL=curl
 fi
 

@@ -43,6 +43,7 @@ do
   if [ $? -eq 0 ]
   then
     echo "Executing $BASE/decent_ci_run.rb"
+    echo "Running in: `pwd`"
 
     if [ `uname` == "Darwin" ]
     then
@@ -52,6 +53,7 @@ do
     fi
 
     $TOOL $BASE/decent_ci_run.rb > $RUBY_FILE
+    echo "Attempting to run $RUBY_FILE"
     ruby $RUBY_FILE $1 $2
     rm $RUBY_FILE
     echo "Build finished, sleeping"

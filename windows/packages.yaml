@@ -22,7 +22,7 @@ packages:
     source: choco
   - name: VisualStudioCommunity2013
     source: choco
-  - name: "vs2013.4"
+  - name: "VS2013.4"
     source: choco
   - name: NSSM
     source: choco

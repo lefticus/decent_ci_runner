@@ -11,7 +11,8 @@ else
 fi
 
 
-TOOL=curl
+#unfortunately required for firewalled hosts
+TOOL="curl -k"
 
 
 git status `pwd` > /dev/null

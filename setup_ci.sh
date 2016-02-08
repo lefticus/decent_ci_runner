@@ -6,7 +6,7 @@ if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh
   RUBY=ruby2.0
-  TOOL=wget
+  TOOL="wget -O -"
 elif [ `uname` == "Darwin" ]
 then
   if [ ! -d "/Applications/XCode.app" ] 

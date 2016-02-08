@@ -11,15 +11,7 @@ else
 fi
 
 
-if [ `uname` == "Linux" ]
-then
-  TOOL=wget
-elif [ `uname` == "Darwin" ]
-then
-  TOOL=curl
-else
-  TOOL=curl
-fi
+TOOL=curl
 
 
 git status `pwd` > /dev/null

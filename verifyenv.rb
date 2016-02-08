@@ -327,6 +327,7 @@ needed_packages.each{ |needed|
 
 if !to_install.empty? and ARGV[0] != "true"
   puts "Dependency installation disabled, exiting"
+  puts "Missing packages: #{to_install}"
   exit 1
 end
 

@@ -25,7 +25,7 @@ else
   PIP_NEEDS_SUDO=false
   run_apt = false
   run_choco = true
-  ENV["PATH"] = "#{ENV["PATH"]};C:\\tools\\python2\\Scripts"
+  ENV["PATH"] = "#{ENV["PATH"]};C:\\tools\\python2\\Scripts;C:\\Python27\\Scripts"
 end
 
 

@@ -53,9 +53,9 @@ case "$?" in
 0)  echo bootstrap success
     ;;
 1)  echo ""
-    echo "*********************************************************************"
-    echo tools installed, you must exit this bash window and restart the setup
-    echo "*********************************************************************"
+    echo "******************************************************************************"
+    echo bootstrap tools installed, you must exit this bash window and restart the setup
+    echo "******************************************************************************"
     exit 1
     ;;
 2)  exit 1
@@ -164,6 +164,7 @@ else
   runonboot $COMMAND_RESULT $2
   popd
   popd
+  echo "Removing $DIR"
   rm -rf $DIR
 fi
 
@@ -174,9 +175,9 @@ case "$COMMAND_RESULT" in
     exit 0
     ;;
 1)  echo ""
-    echo "*********************************************************************"
-    echo tools installed, you must exit this bash window and restart the setup
-    echo "*********************************************************************"
+    echo "**************************************************************************"
+    echo setup tools installed, you must exit this bash window and restart the setup
+    echo "**************************************************************************"
     exit 1
     ;;
 

@@ -131,12 +131,17 @@ function runonboot  {
 
         launchctl unload /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
         launchctl load /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
-        launchctl start com.emptycrate.decent_ci_runner
+#        launchctl start com.emptycrate.decent_ci_runner
       else
         # windows - install via win32
         echo "windows"
 	ruby installwin32service.rb
       fi
+      
+      echo "**************************************************************************"
+      echo Run on boot service set up - you need to configure your yaml and reboot!!
+      echo "**************************************************************************"
+
     fi
   fi
 }

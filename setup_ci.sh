@@ -161,6 +161,7 @@ else
   pushd decent_ci_runner
   $RUBY ./verifyenv.rb $1
   COMMAND_RESULT=$?
+  echo "Result of verifyenv.rb: $COMMAND_RESULT"
   runonboot $COMMAND_RESULT $2
   popd
   popd

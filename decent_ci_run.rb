@@ -71,7 +71,7 @@ begin
 
   puts "Successfully cloned decent_ci repository."
 
-  FileUtils.cd(rundir)
+  FileUtils.cd(run_dir)
 
   puts "Running ci.rb"
   if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])

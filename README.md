@@ -3,6 +3,8 @@ Windows
 
 Install git-bash: https://git-for-windows.github.io/
 
+***NOTE GIT-BASH MUST BE INSTALLED IN PROGRAM FILES DIRECTORY. THIS MAY REQUIRE YOU TO INSTALL IT AS ADMIN***
+
 Common
 ======
 

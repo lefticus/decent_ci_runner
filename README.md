@@ -1,3 +1,10 @@
+After installation of this tool the CI will be set up to run on boot on all 3 platforms.
+
+You will need to edit the appropriate configuration file and reboot the system for the CI to 
+run as expected.
+
+Be sure to read and follow all prompts during the installation process.
+
 Windows
 =======
 

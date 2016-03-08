@@ -19,6 +19,10 @@ packages:
     source: choco
   - name: nsis
     source: choco
+  - name: VisualStudio2015Community
+    source: choco
+    package_parameters: "--Features MDDCPlusPlus"
+
   - name: VisualStudioCommunity2013
     source: choco
   - name: "VS2013.4"

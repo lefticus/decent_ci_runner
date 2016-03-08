@@ -42,7 +42,7 @@ config["packages"].each { |package|
     check_files = [package["check_file"]]
   end
 
-  needed_packages << [package["source"], package["name"], package["version"], package["url"], check_files, package["script"], package["message"]]
+  needed_packages << [package["source"], package["name"], package["version"], package["url"], check_files, package["script"], package["message"], package["package_parameters"]]
 }
 
 
@@ -236,11 +236,14 @@ def install_choco(to_install)
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
-	file.write("<package id='" + package[1] + "'")
+        file.write("<package id='" + package[1] + "'")
         if package[2] != nil then
           file.write(" version='" + package[2] + "'")
         end
-	file.write(" />\n")
+        if package[7] != nil then
+          file.write(" packageParameters='" + package[7] + "'")
+        end
+        file.write(" />\n")
       end
     }
     file.write("</packages>\n");

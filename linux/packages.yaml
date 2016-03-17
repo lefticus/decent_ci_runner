@@ -67,6 +67,8 @@ packages:
     source: apt
   - name: curl
     source: apt
+  - name: texlive-full
+    source: apt
 
   - name: EnergyPlus
     source: script

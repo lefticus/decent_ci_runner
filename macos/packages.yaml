@@ -12,6 +12,11 @@ packages:
     script: FILE=`mktemp -d wkhtmltox.XXXXXX` && curl http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_osx-cocoa-x86-64.pkg -Lo $FILE/wkhtmltox.pkg &&  sudo installer -pkg $FILE/wkhtmltox.pkg -target "/"  ; rm -rf $FILE
     check_file: /usr/local/bin/wkhtmltopdf
 
+  - name: mactex
+    source: script
+    script: FILE=`mktemp -d mactex.XXXXXX` && curl http://tug.org/cgi-bin/mactex-download/MacTeX.pkg -Lo $FILE/mactex.pkg &&  sudo installer -pkg $FILE/mactex.pkg -target "/"  ; rm -rf $FILE
+    check_file: /Library/TeX/texbin/xelatex
+
   - name: pandoc
     source: script
     script: FILE=`mktemp -d pandoc.XXXXXX` && curl https://github.com/jgm/pandoc/releases/download/1.16.0.2/pandoc-1.16.0.2-osx.pkg -Lo $FILE/pandoc.pkg && sudo installer -pkg $FILE/pandoc.pkg -target "/"  ; rm -rf $FILE

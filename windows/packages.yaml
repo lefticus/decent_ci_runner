@@ -29,8 +29,6 @@ packages:
     source: choco
   - name: NSSM
     source: choco
-  - name: miktex
-    source: choco
   - name: EnergyPlus
     source: script
     script: bash -c "wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
@@ -60,6 +58,14 @@ packages:
     script:  bash -c "wget http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download -qO /tmp/mingw-get-setup.exe && elevate -w /tmp/mingw-get-setup.exe ; rm  /tmp/mingw-get-setup.exe"
     check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
     message: "Make sure gfortran and base are selected"
+    
+  - name: miktex
+    source: script
+    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/setup-2.9.5870.exe -qO /tmp/miktex-setup.exe && elevate -w /tmp/miktex-setup.exe ; rm  /tmp/miktex-setup.exe"
+    check_file: ["c:/Program Files/MiKTeX 2.9/miktex/bin/xelatex.exe"]
+    message: "Make sure all packages are installed for all users"
+    
+    
 
 
 

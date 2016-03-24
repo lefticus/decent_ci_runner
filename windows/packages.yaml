@@ -62,7 +62,7 @@ packages:
   - name: miktex
     source: script
     script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/setup-2.9.5870.exe -qO /tmp/miktex-setup.exe && elevate -w /tmp/miktex-setup.exe ; rm  /tmp/miktex-setup.exe"
-    check_file: ["c:/Program Files/MiKTeX 2.9/miktex/bin/xelatex.exe"]
+    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
     message: "Make sure all packages are installed for all users"
     
     

@@ -15,6 +15,7 @@ packages:
     source: choco
   - name: pandoc
     source: choco
+    version: 1.16.0.2
   - name: wkhtmltopdf
     source: choco
   - name: nsis

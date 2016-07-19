@@ -75,7 +75,49 @@ function runonboot  {
       then
         # linux - rc script
         echo "Setting up rc.d Linux script"
-        sudo cp decent_ci /etc/init.d/decent_ci
+
+
+        if [ "$RUNASUSER" == "" ]
+        then
+          RUNASUSER=$USER
+          if [ "$USER" == "root" ]
+          then
+            RUNASUSER=$SUDO_USER
+          fi
+        fi
+
+        if [[ "$RUNASUSER" == "root" || "$RUNASUSER" == "" ]]
+        then
+          echo "Unable to find non-root user to run init script as, aborting"
+        fi
+
+        echo "Installing Linux init script to run as user '$RUNASUSER'"
+
+        INITSCRIPT=`mktemp init.XXXXXX`
+
+        echo ". /lib/init/vars.sh" > $INITSCRIPT
+        echo ". /lib/lsb/init-functions" >> $INITSCRIPT
+        echo "case \"$1\" in" >> $INITSCRIPT
+        echo "    start)" >> $INITSCRIPT
+        echo "    	start-stop-daemon -c $RUNASUSER --start --background --exec /etc/init.d/decent_ci -- background" >> $INITSCRIPT
+        echo "        ;;" >> $INITSCRIPT
+        echo "    background)" >> $INITSCRIPT
+        echo "        /usr/local/bin/decent_ci_run.sh /usr/local/etc/decent_ci_config.yaml false" >> $INITSCRIPT
+        echo "	;;" >> $INITSCRIPT
+        echo "    restart|reload|force-reload)" >> $INITSCRIPT
+        echo "        echo \"Error: argument '$1' not supported\" >&2" >> $INITSCRIPT
+        echo "        exit 3" >> $INITSCRIPT
+        echo "        ;;" >> $INITSCRIPT
+        echo "    stop)" >> $INITSCRIPT
+        echo "        ;;" >> $INITSCRIPT
+        echo "    *)" >> $INITSCRIPT
+        echo "        echo \"Usage: $0 start|stop\" >&2" >> $INITSCRIPT
+        echo "        exit 3" >> $INITSCRIPT
+        echo "        ;;" >> $INITSCRIPT
+        echo "esac" >> $INITSCRIPT
+
+        sudo cp $INITSCRIPT /etc/init.d/decent_ci
+        sudo chmod +x /etc/init.d/decent_ci
         sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
         if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
         then 

@@ -1,6 +1,33 @@
 #!/usr/bin/env bash
 
 
+if [ `uname` == "Linux" ]
+then
+  if [ `whoami` == "root" ]
+  then
+    ISADMIN=1
+  else
+    ISADMIN=0
+  fi
+elif [ `uname` == "Darwin" ]
+then
+  if [ `whoami` == "root" ]
+  then
+    ISADMIN=1
+  else
+    ISADMIN=0
+  fi
+else
+  net session >/dev/null 2>&1
+  if [ $? -eq 0 ]
+  then
+    echo "IS ADMIN"
+    ISADMIN=1
+  else
+    ISADMIN=0
+  fi
+fi
+
 
 if [ "$#" -ne 2 ]
 then
@@ -37,6 +64,14 @@ do
   then
     echo "Executing $BASE/decent_ci_run.rb"
     echo "Running in: `pwd`"
+
+
+    if [ $ISADMIN -eq 1 ]
+    then
+      echo "Refusing to continue with process, cannot run as admin/root"
+      exit 1;
+    fi
+
 
     if [ `uname` == "Darwin" ]
     then

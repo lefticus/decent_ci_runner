@@ -11,6 +11,7 @@ end
 
 puts "starting CI system"
 
+
 begin
   puts "Loading configuration file from : '#{ARGV[0]}'"
   config = YAML.load_file("#{ARGV[0]}")

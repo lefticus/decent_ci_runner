@@ -41,6 +41,11 @@ else
   fi
 fi
 
+if [ ! sudo grep -q  "%users localhost=/sbin/shutdown -h now" /etc/sudoers ]
+then
+  sudo sh -c "echo \"%users localhost=/sbin/shutdown -h now\" >> /etc/sudoers"
+fi
+
 
 
 

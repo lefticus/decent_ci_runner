@@ -20,3 +20,17 @@ repositories:
   - "NREL/EnergyPlus"  
 
 
+virtual_machine_manager_only: false
+
+virtual_machine_virtualbox_executable: "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
+virtual_machine_vmware_executable: "C:/Program Files (x86)/VMWare/VMware Workstation/vmrun.exe"
+
+virtual_machine_list:
+  - name: /path/to/vmx
+    type: vmware
+    revert_snapshot: /path/tospanshot
+  - name: VirtualBoxName / uuid
+    type: virtualbox
+    revert_snapshot: SnapshotName / uuid
+
+

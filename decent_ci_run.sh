@@ -29,12 +29,19 @@ else
 fi
 
 
-if [ "$#" -ne 2 ]
+if [ "$#" -lt 2 ]
 then
-  echo "Wrong number arguments, expected: $0 <configfile> <installdeps>"
+  echo "Wrong number arguments, expected: $0 <configfile> <installdeps> [<bootstrap deps only>]"
   exit 1
 else
-  echo "Configfile: '$1', onlytestsetup '$2'"
+  if [ "$3" -ne "true" ]
+  then
+    BOOTSTRAP_DEPS_ONLY="true"
+  else
+    BOOTSTRAP_DEPS_ONLY="false"
+  fi
+
+  echo "Configfile: '$1', installdeps '$2', bootstrap_deps_only '$3'"
 fi
 
 
@@ -58,7 +65,7 @@ fi
 while [ 0 ]
 do
   echo "Executing setup_ci.sh"
-  bash <($TOOL $BASE/setup_ci.sh) $2
+  bash <($TOOL $BASE/setup_ci.sh) $2 $BOOTSTRAP_DEPS_ONLY
 
   if [ $? -eq 0 ]
   then

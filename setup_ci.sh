@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-echo "$0 installdeps: '$1' runonboot: '$2'"
+if [ "$#" -ne 3 ]
+then
+  echo "Wrong number arguments, expected: $0 <configfile> <installdeps> <bootstrap deps only>"
+  exit 1
+fi
+
+echo "$0 installdeps: '$1' runonboot: '$2' bootstrap_only: '$3'"
 
 if [ `uname` == "Linux" ]
 then
@@ -177,9 +183,9 @@ function runonboot  {
       else
         # windows - install via win32
         echo "windows"
-	ruby installwin32service.rb
+        ruby installwin32service.rb
       fi
-      
+
       echo "**************************************************************************"
       echo Run on boot service set up - you need to configure your yaml and reboot!!
       echo "**************************************************************************"

@@ -4,6 +4,25 @@ require 'fileutils'
 require 'yaml'
 require 'deep_merge'
 
+def manage_vm(exe, vm_command)
+  command = "#{exe} #{vm_command}"
+  begin
+    result = `#{command}`
+    puts "VM '#{command}' result: '#{result}'"
+
+    if $?.exitstatus == 0
+      return true
+    else
+      puts "While executing vm command: '#{command}' an error code was returned"
+      return false
+    end
+
+  rescue => e
+    puts "While executing vm command: '#{command}' error '#{e.to_s}'"
+  end
+end
+
+
 if ARGV.length < 1
   puts "Usage: #{__FILE__} <config_file>"
   abort("Not enough arguments")
@@ -74,10 +93,83 @@ begin
 
   FileUtils.cd(run_dir)
 
-  puts "Running ci.rb"
-  if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
-    puts "Unable to execute ci.rb script"
+
+#virtual_machine_manager_only: false
+
+#virtual_machine_virtualbox_executable: "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
+#virtual_machine_vmware_executable: "C:/Program Files (x86)/VMWare/VMware Workstation/vmrun.exe"
+
+#virtual_machine_list:
+#  - name: /path/to/vmx
+#    type: vmware
+#    revert_snapshot: /path/tospanshot
+#  - name: VirtualBoxName / uuid
+#    type: virtualbox
+#    revert_snapshot: SnapshotName / uuid
+
+
+  if !config["virtual_machine_list"].nil?
+    config["virtual_machine_list"].each { |machine|
+      vmname = machine["name"]
+      type = machine["type"]
+      revert_snapshot = machine["revert_snapshot"]
+
+      if vmname.nil?
+        puts "vmname not specified, skipping"
+        next
+      end
+
+      if type.nil?
+        puts "machine type for #{vmname} not specified, skipping"
+        next
+      end
+
+      if vmname == "vmware"
+        exe = config["virtual_machine_vmware_executable"]
+        if exe.nil?
+          puts "vmware executable not specified, skipping #{vmname}"
+          next
+        end
+
+        if !revert_snapshot.nil?
+          if manage_vm(exe, "-T ws list").split("\n").none? { |name| File.identical?(vmname, name.strip) }
+            puts "vmware #{vmname} not running, executing revert"
+            manage_vm(exe, "-T ws revertToSnapshot \"#{vmname}\" \"#{revert_snapshot}\"")
+          end
+        end
+
+        manage_vm(exe, "-T ws start \"#{vmname}\" \"#{revert_snapshot}\"")
+      elsif vmname == "virtualbox"
+        exe = config["virtual_machine_virtualbox_executable"]
+        if exe.nil?
+          puts "virtualbox executable not specified, skipping #{vmname}"
+          next
+        end
+
+        if !revert_snapshot.nil?
+          running_vm = manage_vm(exe, "list runningvms").split("\n").none? { |n|
+            m = /"(?<name>.*)" {(?<uuid>.*)}/.match(n)
+            return !m.nil? && m.size == 2 && (vmname == m[1] || vmname == m[2])
+          }
+
+          if !running_vm 
+            manage_vm(exe, "snapshot \"#{vmname}\" restore \"#{revert_snapshot}\"")
+          end
+        end
+
+        manage_vm(exe, "startvm \"#{vmname}\"")
+      end
+    }
   end
+
+  if !config["virtual_machine_manager_only"]
+    puts "Running ci.rb"
+    if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
+      puts "Unable to execute ci.rb script"
+    end
+  end
+
+
 
 rescue => e
   puts "Error setting up build environment #{e}"

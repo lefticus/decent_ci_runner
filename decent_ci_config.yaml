@@ -33,4 +33,5 @@ virtual_machine_list:
     type: virtualbox
     revert_snapshot: SnapshotName / uuid
 
+shutdown_after_run: false
 

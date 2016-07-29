@@ -3,6 +3,7 @@
 require 'fileutils'
 require 'yaml'
 require 'deep_merge'
+require 'rbconfig'
 
 def manage_vm(exe, vm_command)
   command = "#{exe} #{vm_command}"
@@ -94,20 +95,6 @@ begin
   FileUtils.cd(run_dir)
 
 
-#virtual_machine_manager_only: false
-
-#virtual_machine_virtualbox_executable: "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-#virtual_machine_vmware_executable: "C:/Program Files (x86)/VMWare/VMware Workstation/vmrun.exe"
-
-#virtual_machine_list:
-#  - name: /path/to/vmx
-#    type: vmware
-#    revert_snapshot: /path/tospanshot
-#  - name: VirtualBoxName / uuid
-#    type: virtualbox
-#    revert_snapshot: SnapshotName / uuid
-
-
   if !config["virtual_machine_list"].nil?
     config["virtual_machine_list"].each { |machine|
       vmname = machine["name"]
@@ -166,6 +153,16 @@ begin
     puts "Running ci.rb"
     if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
       puts "Unable to execute ci.rb script"
+    end
+  end
+
+  if config["shutdown_after_run"]
+    if RbConfig::CONFIG["target_os"] =~ /mingw|mswin/
+      # windows
+      `shutdown /s`
+    else
+      # not windows
+      `sudo shutdown -h now`
     end
   end
 

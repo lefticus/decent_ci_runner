@@ -125,8 +125,9 @@ function runonboot  {
         echo "esac" >> $INITSCRIPT
 
         sudo cp $INITSCRIPT /etc/init.d/decent_ci
-        sudo chmod +x /etc/init.d/decent_ci
+        sudo chmod +rx /etc/init.d/decent_ci
         sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
+        sudo chmod +rx /usr/local/bin/decent_ci_run.sh
         if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
         then 
           sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml

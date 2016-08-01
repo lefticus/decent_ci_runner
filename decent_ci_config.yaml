@@ -14,6 +14,11 @@ test_mode: true
 github_token: "ABCDEF1234567890"
 options:
   - "--no-verbose"
+# list of regex for users allowed to have
+# external PR's built
+  - "--external_users=\".*\""
+# branch to pull trusted files (ie files containing known users info)
+  - "--trusted_branch=develop"
 # You probably want to uncomment this on Windows
 #  - "--disable-ssl-verification"
 repositories:

@@ -269,16 +269,25 @@ def install_gem_pip(to_install)
     to_install.each{ |package| 
       if package[0] == gemname then
         something_to_do = true
-        gem_string += package[1]
+        cur_string = gem_string
+        cur_string += package[1]
         if package[2] != nil then
-          gem_string += "=#{package[2]}"
+          if gemname.start_with?("gem")
+            cur_string += " --version #{package[2]}"
+          else
+            cur_string += "=#{package[2]}"
+          end
         end
-        gem_string += " "
+        
+        if gemname.start_with?("gem")
+          cur_string += " --no-rdoc --no-ri"
+        end
+        
+        puts(execute("#{cur_string}"))
       end
     } 
-    if something_to_do then
-      puts(execute("#{gem_string}"))
-    else
+    
+    if !something_to_do then
       puts("No #{gemname} packages to install")
     end
   } 

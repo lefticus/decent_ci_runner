@@ -48,7 +48,7 @@ then
   BASE=`pwd`
   TOOL=cat
 else
-  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/`git rev-parse --abbrev-ref HEAD`
+  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/security_enhancements
 fi
 
 echo "executing: '$TOOL $BASE/$RUNFILE'"

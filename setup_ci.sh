@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+BRANCH_NAME=security_enhancements
+
 if [ "$#" -ne 3 ]
 then
   echo "Wrong number arguments, expected: $0 <configfile> <installdeps> <bootstrap deps only>"
@@ -48,7 +50,7 @@ then
   BASE=`pwd`
   TOOL=cat
 else
-  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/security_enhancements
+  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/$BRANCH_NAME
 fi
 
 echo "executing: '$TOOL $BASE/$RUNFILE'"
@@ -212,6 +214,7 @@ else
   echo "Checkout out decent_ci_runner to $DIR for execution"
   git clone https://github.com/lefticus/decent_ci_runner
   pushd decent_ci_runner
+  git checkout $BRANCH_NAME
   $RUBY ./verifyenv.rb $1
   COMMAND_RESULT=$?
   echo "Result of verifyenv.rb: $COMMAND_RESULT"

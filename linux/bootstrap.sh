@@ -23,7 +23,16 @@ then
   fi
 fi
 
-if [ ! `sudo grep -q  "$2.*NOPASSWD.*poweroff.*shutdown.*" /etc/sudoers` ]
+
+if [ "$2" == "" ]
+then
+  echo "User not known - unable to update sudoers file"
+  exit 1
+fi
+
+sudo grep -q  "$2.*NOPASSWD.*poweroff.*shutdown.*" /etc/sudoers
+
+if [ $? -eq 1 ]
 then
   sudo sh -c "echo \"$2 ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown\" >> /etc/sudoers"
 fi

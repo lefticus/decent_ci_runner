@@ -104,6 +104,7 @@ function runonboot  {
         INITSCRIPT=`mktemp init.XXXXXX`
         
         echo "#! /bin/sh" > $INITSCRIPT
+        echo "" >> $INITSCRIPT
         echo "### BEGIN INIT INFO" >> $INITSCRIPT
         echo "# Provides:          decent_ci " >> $INITSCRIPT
         echo "# Required-Start:    \$remote_fs \$all" >> $INITSCRIPT

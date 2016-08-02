@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+BRANCH_NAME=security_enhancements
 
 if [ `uname` == "Linux" ]
 then
@@ -58,7 +59,7 @@ then
   TOOL=cat
 else
   echo "NOT Running from git folder"
-  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/master
+  BASE=https://raw.githubusercontent.com/lefticus/decent_ci_runner/$BRANCH_NAME
 fi
 
 

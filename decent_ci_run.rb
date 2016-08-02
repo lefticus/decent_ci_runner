@@ -91,6 +91,7 @@ begin
   end
 
   puts "Successfully cloned decent_ci repository."
+  system("git checkout #{config["branch_name"]}")
 
   FileUtils.cd(run_dir)
 

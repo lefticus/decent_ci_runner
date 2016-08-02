@@ -102,10 +102,20 @@ function runonboot  {
         echo "Installing Linux init script to run as user '$RUNASUSER'"
 
         INITSCRIPT=`mktemp init.XXXXXX`
-
-        echo ". /lib/init/vars.sh" > $INITSCRIPT
+        
+        echo "#! /bin/sh" > $INITSCRIPT
+        echo "### BEGIN INIT INFO" >> $INITSCRIPT
+        echo "# Provides:          decent_ci " >> $INITSCRIPT
+        echo "# Required-Start:    \$remote_fs \$all" >> $INITSCRIPT
+        echo "# Required-Stop:" >> $INITSCRIPT
+        echo "# Default-Start:     2 3 4 5" >> $INITSCRIPT
+        echo "# Default-Stop:" >> $INITSCRIPT
+        echo "# Short-Description: Executes the decent_ci system as a daemon" >> $INITSCRIPT
+        echo "### END INIT INFO" >> $INITSCRIPT
+        echo "" >> $INITSCRIPT
+        echo ". /lib/init/vars.sh" >> $INITSCRIPT
         echo ". /lib/lsb/init-functions" >> $INITSCRIPT
-        echo "case \"$1\" in" >> $INITSCRIPT
+        echo "case \"\$1\" in" >> $INITSCRIPT
         echo "    start)" >> $INITSCRIPT
         echo "    	start-stop-daemon -c $RUNASUSER --start --background --exec /etc/init.d/decent_ci -- background" >> $INITSCRIPT
         echo "        ;;" >> $INITSCRIPT
@@ -113,13 +123,13 @@ function runonboot  {
         echo "        /usr/local/bin/decent_ci_run.sh /usr/local/etc/decent_ci_config.yaml false" >> $INITSCRIPT
         echo "	;;" >> $INITSCRIPT
         echo "    restart|reload|force-reload)" >> $INITSCRIPT
-        echo "        echo \"Error: argument '$1' not supported\" >&2" >> $INITSCRIPT
+        echo "        echo \"Error: argument '\$1' not supported\" >&2" >> $INITSCRIPT
         echo "        exit 3" >> $INITSCRIPT
         echo "        ;;" >> $INITSCRIPT
         echo "    stop)" >> $INITSCRIPT
         echo "        ;;" >> $INITSCRIPT
         echo "    *)" >> $INITSCRIPT
-        echo "        echo \"Usage: $0 start|stop\" >&2" >> $INITSCRIPT
+        echo "        echo \"Usage: \$0 start|stop\" >&2" >> $INITSCRIPT
         echo "        exit 3" >> $INITSCRIPT
         echo "        ;;" >> $INITSCRIPT
         echo "esac" >> $INITSCRIPT

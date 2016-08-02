@@ -23,9 +23,9 @@ then
   fi
 fi
 
-if [ ! `sudo grep -q  "%users localhost=/sbin/shutdown -h now" /etc/sudoers` ]
+if [ ! `sudo grep -q  "$2.*NOPASSWD.*poweroff.*shutdown.*" /etc/sudoers` ]
 then
-  sudo sh -c "echo \"%users localhost=/sbin/shutdown -h now\" >> /etc/sudoers"
+  sudo sh -c "echo \"$2 ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown\" >> /etc/sudoers"
 fi
 
 exit 0

@@ -8,6 +8,17 @@ then
   exit 1
 fi
 
+
+if [ "$RUNASUSER" == "" ]
+then
+  RUNASUSER=$USER
+  if [ "$USER" == "root" ]
+  then
+    RUNASUSER=$SUDO_USER
+  fi
+fi
+
+
 echo "$0 installdeps: '$1' runonboot: '$2' bootstrap_only: '$3'"
 
 if [ `uname` == "Linux" ]
@@ -54,7 +65,7 @@ else
 fi
 
 echo "executing: '$TOOL $BASE/$RUNFILE'"
-bash <($TOOL $BASE/$RUNFILE) $1
+bash <($TOOL $BASE/$RUNFILE) $1 $RUNASUSER
 
 case "$?" in
 
@@ -84,15 +95,6 @@ function runonboot  {
         # linux - rc script
         echo "Setting up rc.d Linux script"
 
-
-        if [ "$RUNASUSER" == "" ]
-        then
-          RUNASUSER=$USER
-          if [ "$USER" == "root" ]
-          then
-            RUNASUSER=$SUDO_USER
-          fi
-        fi
 
         if [[ "$RUNASUSER" == "root" || "$RUNASUSER" == "" ]]
         then

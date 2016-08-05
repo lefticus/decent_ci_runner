@@ -2,9 +2,9 @@
 
 BRANCH_NAME=security_enhancements
 
-if [ "$#" -ne 3 ]
+if [ "$#" -lt 2 ]
 then
-  echo "Wrong number arguments, expected: $0 <configfile> <installdeps> <bootstrap deps only>"
+  echo "Wrong number arguments, expected: $0 <configfile> <runonboot> [<bootstrap deps only>]"
   exit 1
 fi
 
@@ -19,7 +19,7 @@ then
 fi
 
 
-echo "$0 installdeps: '$1' runonboot: '$2' bootstrap_only: '$3'"
+echo "$0 configfile: '$1' runonboot: '$2' [bootstrap_deps_only: '$3']"
 
 if [ `uname` == "Linux" ]
 then
@@ -210,35 +210,39 @@ function runonboot  {
   fi
 }
 
-if [ $ISGITFOLDER -eq 1 ]
+if [ "$3" != "false" ]
 then
-  echo "Executing decent_ci_runner from $BASE"
-  $RUBY $BASE/verifyenv.rb $1
-  COMMAND_RESULT=$?
-  runonboot $COMMAND_RESULT $2
-else
-  if [ `uname` == "Darwin" ]
+  if [ $ISGITFOLDER -eq 1 ]
   then
-    DIR=`mktemp -d $TMPDIR/decent_ci_runner.XXXXXX`
+    echo "Executing decent_ci_runner from $BASE"
+    $RUBY $BASE/verifyenv.rb $1
+    COMMAND_RESULT=$?
+    runonboot $COMMAND_RESULT $2
   else
-    DIR=`mktemp --tmpdir -d decent_ci_runner.XXXXXX`
+    if [ `uname` == "Darwin" ]
+    then
+      DIR=`mktemp -d $TMPDIR/decent_ci_runner.XXXXXX`
+    else
+      DIR=`mktemp --tmpdir -d decent_ci_runner.XXXXXX`
+    fi
+  
+    pushd $DIR
+    echo "Checkout out decent_ci_runner to $DIR for execution"
+    git clone https://github.com/lefticus/decent_ci_runner
+    pushd decent_ci_runner
+    git checkout $BRANCH_NAME
+    $RUBY ./verifyenv.rb $1
+    COMMAND_RESULT=$?
+    echo "Result of verifyenv.rb: $COMMAND_RESULT"
+    runonboot $COMMAND_RESULT $2
+    popd
+    popd
+    echo "Removing $DIR"
+    rm -rf $DIR
   fi
-
-  pushd $DIR
-  echo "Checkout out decent_ci_runner to $DIR for execution"
-  git clone https://github.com/lefticus/decent_ci_runner
-  pushd decent_ci_runner
-  git checkout $BRANCH_NAME
-  $RUBY ./verifyenv.rb $1
-  COMMAND_RESULT=$?
-  echo "Result of verifyenv.rb: $COMMAND_RESULT"
-  runonboot $COMMAND_RESULT $2
-  popd
-  popd
-  echo "Removing $DIR"
-  rm -rf $DIR
+else
+  COMMAND_RESULT=0
 fi
-
 
 case "$COMMAND_RESULT" in
 

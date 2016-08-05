@@ -11,8 +11,14 @@ fi
 
 if [ "$RUNASUSER" == "" ]
 then
-  RUNASUSER=$USER
-  if [ "$USER" == "root" ]
+  if [ "$USER" == "" ]
+  then
+    RUNASUSER=`whoami`
+  else
+    RUNASUSER=$USER
+  fi
+
+  if [ "$RUNASUSER" == "root" ]
   then
     RUNASUSER=$SUDO_USER
   fi

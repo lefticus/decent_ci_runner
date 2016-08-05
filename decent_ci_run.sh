@@ -2,6 +2,8 @@
 
 BRANCH_NAME=security_enhancements
 
+echo "Running as `whoami`"
+
 if [ `uname` == "Linux" ]
 then
   if [ `whoami` == "root" ]

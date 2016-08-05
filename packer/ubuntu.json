@@ -1,122 +1,145 @@
 {
-    "variables": {
-        "ssh_name": "decent_ci",
-        "ssh_pass": "decent_ci",
-        "hostname": "decent-ci-ubuntu-14-04",
-	"disk_size": "20000",
-        "iso_url": "ubuntu-14.04.4-server-amd64.iso",
-        "iso_checksum": "2ac1f3e0de626e54d05065d6f549fa3a",
-        "iso_checksum_type": "md5",
-	"memory": "2048",
-	"cpu_cores": "2",
-	"vm_name": "decent_ci"
-    },
+  "variables" : {
+    "ssh_name" : "decent_ci",
+    "ssh_pass" : "decent_ci",
+    "hostname" : "decent-ci-ubuntu-14-04",
+    "disk_size" : "20000",
+    "iso_url" : "ubuntu-14.04.4-server-amd64.iso",
+    "iso_checksum" : "2ac1f3e0de626e54d05065d6f549fa3a",
+    "iso_checksum_type" : "md5",
+    "memory" : "2048",
+    "cpu_cores" : "2",
+    "name" : "decent_ci-ubuntu-14.04"
+  },
 
-    "builders": [{
-        "type": "virtualbox-iso",
-        "guest_os_type": "Ubuntu_64",
-
-        "vboxmanage": [
-            ["modifyvm", "{{.Name}}", "--vram", "32"],
-            ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
-            ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
-        ],
-
-        "disk_size" : "{{user `disk_size`}}",
-
-        "iso_url": "{{user `iso_url`}}",
-        "iso_checksum": "{{user `iso_checksum`}}",
-        "iso_checksum_type": "{{user `iso_checksum_type`}}",
-
-        "http_directory" : ".",
-        "http_port_min" : 9001,
-        "http_port_max" : 9001,
-	
-	"boot_wait" : "10s",
-
-        "ssh_username": "{{user `ssh_name`}}",
-        "ssh_password": "{{user `ssh_pass`}}",
-        "ssh_wait_timeout": "20m",
-
-        "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
-
-        "boot_command" : [
-            "<esc><esc><enter><wait>",
-            "/install/vmlinuz noapic ",
-            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            "hostname={{user `hostname`}} ",
-            "fb=false debconf/frontend=noninteractive ",
-            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-            "initrd=/install/initrd.gz -- <enter>"
-        ]
-    },
-	
-	
-	{
-        "type": "vmware-iso",
-        "guest_os_type": "ubuntu-64",
-
-       
-	"vm_name": "{{user `vm_name`}}",
-	
-        "vmx_data": {
-	    "cpuid.coresPerSocket": "1",
-	    "memsize": "{{user `memory`}}",
-	    "numvcpus": "{{user `cpu_cores`}}"
-        },
-	
-	
-        "disk_size" : "{{user `disk_size`}}",
-
-        "iso_url": "{{user `iso_url`}}",
-        "iso_checksum": "{{user `iso_checksum`}}",
-        "iso_checksum_type": "{{user `iso_checksum_type`}}",
-
-        "http_directory" : ".",
-        "http_port_min" : 9001,
-        "http_port_max" : 9001,
-	
-	"boot_wait" : "10s",
-
-        "ssh_username": "{{user `ssh_name`}}",
-        "ssh_password": "{{user `ssh_pass`}}",
-        "ssh_wait_timeout": "20m",
-
-        "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
-
-        "boot_command" : [
-            "<esc><esc><enter><wait>",
-            "/install/vmlinuz noapic ",
-            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            "hostname={{user `hostname`}} ",
-            "fb=false debconf/frontend=noninteractive ",
-            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-            "initrd=/install/initrd.gz -- <enter>"
-        ]
-    }
-	
-	
-    ],
-	
-    "provisioners": [
+  "builders" : [
     {
-      "type": "shell",
-      "execute_command": "echo {{user `ssh_pass`}} | sudo -S bash '{{.Path}}'",
-       "inline": ["apt-get update", 
-                  "apt-get -y --no-install-recommends install ubuntu-desktop curl gnome-terminal indicator-session unity-lens-applications", 
-                  "bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/security_enhancements/setup_ci.sh) true true false", 
-                  "bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/security_enhancements/setup_ci.sh) true true false",
-                  "mkdir /tmp/vbox",
-                  "mount -o loop /home/{{user `ssh_name`}}/VBoxGuestAdditions.iso /tmp/vbox",
-                  "cd /tmp/vbox",
-                  "./VBoxLinuxAdditions.run",
-                  "rm /home/{{user `ssh_name`}}/*.iso"
-                  ]
-    }]
- 
-	
+      "type" : "virtualbox-iso",
+      "guest_os_type" : "Ubuntu_64",
+      "vm_name" : "{{user `name`}}-virtualbox",
+
+      "vboxmanage" : [
+        ["modifyvm", "{{.Name}}", "--vram", "32"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
+      ],
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "ssh_username" : "{{user `ssh_name`}}",
+      "ssh_password" : "{{user `ssh_pass`}}",
+      "ssh_wait_timeout" : "20m",
+
+      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+      "boot_command" : [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{user `hostname`}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+        "initrd=/install/initrd.gz -- <enter>"
+      ]
+    },
+    {
+      "type" : "vmware-iso",
+      "guest_os_type" : "ubuntu-64",
+      "vm_name" : "{{user `name`}}-vmware",
+
+      "vmx_data" : {
+        "cpuid.coresPerSocket" : "1",
+        "memsize" : "{{user `memory`}}",
+        "numvcpus" : "{{user `cpu_cores`}}"
+      },
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "ssh_username" : "{{user `ssh_name`}}",
+      "ssh_password" : "{{user `ssh_pass`}}",
+      "ssh_wait_timeout" : "20m",
+
+      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+      "boot_command" : [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{user `hostname`}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+        "initrd=/install/initrd.gz -- <enter>"
+      ]
+    }
+
+  ],
+
+  "provisioners" : [
+    { 
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "/tmp/decent_ci_config.yaml"
+      },
+    
+    {
+      "type" : "shell",
+      "execute_command" : "echo {{user `ssh_pass`}} | {{ .Vars }} sudo -E -S bash '{{.Path}}'",
+
+      "override" : {
+        "virtualbox-iso" : {
+          "environment_vars" : [
+            "SSH_USERNAME={{user `ssh_name`}}"
+          ],
+          "scripts" : [
+            "decent_ci_setup.sh",
+            "virtualbox.sh"
+          ]
+        },
+        "vmware-iso" : {
+          "environment_vars" : [
+            "SSH_USERNAME={{user `ssh_name`}}"
+          ],
+          "scripts" : [
+            "decent_ci_setup.sh",
+            "vmware.sh"
+          ]
+        }
+      }
+
+    }
+  ],
+  
+  "post-processors" : [
+    {
+      "type" : "compress",
+      "output" : "{{user `name`}}-{{.BuildName}}.zip"
+    }
+  ]
+  
+  
+
 }

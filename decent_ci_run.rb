@@ -6,20 +6,22 @@ require 'deep_merge'
 require 'rbconfig'
 
 def manage_vm(exe, vm_command)
-  command = "#{exe} #{vm_command}"
+  command = "\"#{exe}\" #{vm_command}"
   begin
+    puts "Executing VM Command: #{command}"
     result = `#{command}`
     puts "VM '#{command}' result: '#{result}'"
 
     if $?.exitstatus == 0
-      return true
+      return result
     else
       puts "While executing vm command: '#{command}' an error code was returned"
-      return false
+      return nil
     end
 
   rescue => e
     puts "While executing vm command: '#{command}' error '#{e.to_s}'"
+    return nil
   end
 end
 
@@ -97,7 +99,9 @@ begin
 
 
   if !config["virtual_machine_list"].nil?
+    puts "Looping over VM list"
     config["virtual_machine_list"].each { |machine|
+      puts "VM: '#{machine}'"
       vmname = machine["name"]
       type = machine["type"]
       revert_snapshot = machine["revert_snapshot"]
@@ -112,7 +116,7 @@ begin
         next
       end
 
-      if vmname == "vmware"
+      if type == "vmware"
         exe = config["virtual_machine_vmware_executable"]
         if exe.nil?
           puts "vmware executable not specified, skipping #{vmname}"
@@ -127,7 +131,7 @@ begin
         end
 
         manage_vm(exe, "-T ws start \"#{vmname}\" \"#{revert_snapshot}\"")
-      elsif vmname == "virtualbox"
+      elsif type == "virtualbox"
         exe = config["virtual_machine_virtualbox_executable"]
         if exe.nil?
           puts "virtualbox executable not specified, skipping #{vmname}"
@@ -146,6 +150,8 @@ begin
         end
 
         manage_vm(exe, "startvm \"#{vmname}\"")
+	else
+	puts "UNKNOWN VM TYPE"
       end
     }
   end

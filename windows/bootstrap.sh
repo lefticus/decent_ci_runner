@@ -87,5 +87,7 @@ then
   fi
 fi
 
+gem install deep_merge
+
 exit 0
 

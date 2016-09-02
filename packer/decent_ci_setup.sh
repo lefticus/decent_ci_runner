@@ -1,6 +1,8 @@
 #!/bin/bash -eux
 
 echo "Username: '$SSH_USERNAME'"
+echo ":ssl_verify_mode: 0" > /home/$SSH_USERNAME/.gemrc
+chown $SSH_USERNAME.$SSH_USERNAME /home/$SSH_USERNAME/.gemrc
 apt-get update
 apt-get -y upgrade
 apt-get -y --no-install-recommends install ubuntu-desktop curl gnome-terminal indicator-session unity-lens-applications

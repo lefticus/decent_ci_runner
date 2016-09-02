@@ -3,12 +3,12 @@
     "ssh_name" : "decent_ci",
     "ssh_pass" : "decent_ci",
     "hostname" : "decent-ci-ubuntu-14-04",
-    "disk_size" : "20000",
+    "disk_size" : "40000",
     "iso_url" : "ubuntu-14.04.4-server-amd64.iso",
     "iso_checksum" : "2ac1f3e0de626e54d05065d6f549fa3a",
     "iso_checksum_type" : "md5",
-    "memory" : "2048",
-    "cpu_cores" : "2",
+    "memory" : "4096",
+    "cpu_cores" : "4",
     "name" : "decent_ci-ubuntu-14.04"
   },
 

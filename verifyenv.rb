@@ -169,7 +169,7 @@ def install_apt_sources(sources, apt_keys, apt_sources)
 
   sources.each { |source| 
     if !apt_keys.include?(source["id"]) then
-      execute("wget -O - #{source["key"]} | #{SUDO_TOOL} apt-key add -")
+      execute("wget --no-check-certificate -O - #{source["key"]} | #{SUDO_TOOL} apt-key add -")
       did_something = true
     end
 
@@ -211,7 +211,7 @@ end
 def install_dpkg(to_install)
   to_install.each{ |package| 
     if package[0] == "dpkg" then
-      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget \"$URL\" -qO $FILE && #{SUDO_TOOL} dpkg -i $FILE; rm $FILE"))
+      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget  --no-check-certificate  \"$URL\" -qO $FILE && #{SUDO_TOOL} dpkg -i $FILE; rm $FILE"))
     end
   }  
 end

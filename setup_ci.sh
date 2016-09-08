@@ -205,7 +205,13 @@ function runonboot  {
       else
         # windows - install via win32
         echo "windows"
-        ruby installwin32service.rb
+        if [ "$3" != "true" ]
+        then
+          ruby installwin32service.rb
+        else
+          ruby installwin32vmservice.rb
+        fi
+        
       fi
 
       echo "**************************************************************************"

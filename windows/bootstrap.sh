@@ -87,7 +87,7 @@ then
   fi
 fi
 
-gem install deep_merge
+gem install deep_merge --source http://rubygems.org
 
 exit 0
 

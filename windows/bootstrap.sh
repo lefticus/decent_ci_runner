@@ -98,7 +98,7 @@ fi
 
 if [ $HAS_NSSM -eq 0 ]
 then
-    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense NSSM
+    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense NSSM
 fi
 
 gem install deep_merge --source http://rubygems.org

@@ -130,7 +130,7 @@ begin
           end
         end
 
-        manage_vm(exe, "-T ws start \"#{vmname}\" \"#{revert_snapshot}\"")
+        manage_vm(exe, "-T ws start \"#{vmname}\"")
       elsif type == "virtualbox"
         exe = config["virtual_machine_virtualbox_executable"]
         if exe.nil?

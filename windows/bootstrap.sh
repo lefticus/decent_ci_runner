@@ -36,6 +36,15 @@ else
   HAS_RUBY=0
 fi
 
+command -v nssm
+
+if [ $? -eq 0 ]
+then
+  HAS_NSSM=1
+else
+  HAS_NSSM=0
+fi
+
 
 command -v elevate
 
@@ -85,6 +94,11 @@ then
     echo "You must run this process from an administrative bash console to install 'elevate' and 'ruby'"
     exit 2
   fi
+fi
+
+if [ $HAS_NSSM -eq 0 ]
+then
+    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense NSSM
 fi
 
 gem install deep_merge --source http://rubygems.org

@@ -13,7 +13,7 @@ virtual_machine_vmware_executable: "C:/Program Files (x86)/VMWare/VMware Worksta
 virtual_machine_list:
   - name: /path/to/vmx
     type: vmware
-    revert_snapshot: /path/tospanshot
+    revert_snapshot: snapshot name
   - name: VirtualBoxName / uuid
     type: virtualbox
     revert_snapshot: SnapshotName / uuid

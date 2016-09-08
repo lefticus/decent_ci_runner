@@ -22,6 +22,7 @@ then
   fi
 else
   ISWINDOWS=1
+  echo "IS WINDOWS"
   net session >/dev/null 2>&1
   if [ $? -eq 0 ]
   then

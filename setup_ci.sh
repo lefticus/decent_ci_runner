@@ -91,7 +91,7 @@ esac
 
 
 function runonboot  {
-  echo "runonboot '$1' '$2'"
+  echo "runonboot '$1' '$2' '$3'"
   if [ $1 -eq 0 ]
   then
     if [ "$2" == "true" ]
@@ -234,7 +234,7 @@ then
     COMMAND_RESULT=0
   fi
 
-  runonboot $COMMAND_RESULT $2
+  runonboot $COMMAND_RESULT $2 $3
 else
   if [ `uname` == "Darwin" ]
   then
@@ -258,7 +258,7 @@ else
   fi
 
   echo "Result of verifyenv.rb: $COMMAND_RESULT"
-  runonboot $COMMAND_RESULT $2
+  runonboot $COMMAND_RESULT $2 $3
   popd
   popd
   echo "Removing $DIR"

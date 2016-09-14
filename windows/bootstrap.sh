@@ -36,6 +36,15 @@ else
   HAS_RUBY=0
 fi
 
+command -v nssm
+
+if [ $? -eq 0 ]
+then
+  HAS_NSSM=1
+else
+  HAS_NSSM=0
+fi
+
 
 command -v elevate
 
@@ -87,7 +96,12 @@ then
   fi
 fi
 
-gem install deep_merge
+if [ $HAS_NSSM -eq 0 ]
+then
+    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w -c $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --allow-empty-checksums --yes --acceptlicense NSSM
+fi
+
+gem install deep_merge --source http://rubygems.org
 
 exit 0
 

@@ -3,7 +3,7 @@
 BRANCH_NAME=security_enhancements
 
 echo "Running as `whoami`"
-
+ISWINDOWS=0
 if [ `uname` == "Linux" ]
 then
   if [ `whoami` == "root" ]
@@ -21,6 +21,8 @@ then
     ISADMIN=0
   fi
 else
+  ISWINDOWS=1
+  echo "IS WINDOWS"
   net session >/dev/null 2>&1
   if [ $? -eq 0 ]
   then
@@ -78,8 +80,11 @@ do
 
     if [ $ISADMIN -eq 1 ]
     then
-      echo "Refusing to continue with process, cannot run as admin/root"
-      exit 1;
+      if [ $ISWINDOWS -eq 0 ]
+      then
+        echo "Refusing to continue with process, cannot run as admin/root"
+        exit 1;
+      fi
     fi
 
 

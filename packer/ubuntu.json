@@ -124,8 +124,7 @@
             "SSH_USERNAME={{user `ssh_name`}}"
           ],
           "scripts" : [
-            "decent_ci_setup.sh",
-            "vmware.sh"
+            "decent_ci_setup.sh"
           ]
         }
       }

@@ -76,19 +76,19 @@
         <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
             <UserAccounts>
                 <AdministratorPassword>
-                    <Value>vagrant</Value>
+                    <Value>decent_ci</Value>
                     <PlainText>true</PlainText>
                 </AdministratorPassword>
                 <LocalAccounts>
                     <LocalAccount wcm:action="add">
                         <Password>
-                            <Value>vagrant</Value>
+                            <Value>decent_ci</Value>
                             <PlainText>true</PlainText>
                         </Password>
                         <Description>Vagrant User</Description>
-                        <DisplayName>vagrant</DisplayName>
+                        <DisplayName>decent_ci</DisplayName>
                         <Group>administrators</Group>
-                        <Name>vagrant</Name>
+                        <Name>decent_ci</Name>
                     </LocalAccount>
                 </LocalAccounts>
             </UserAccounts>
@@ -100,10 +100,10 @@
             </OOBE>
             <AutoLogon>
                 <Password>
-                    <Value>vagrant</Value>
+                    <Value>decent_ci</Value>
                     <PlainText>true</PlainText>
                 </Password>
-                <Username>vagrant</Username>
+                <Username>decent_ci</Username>
                 <Enabled>true</Enabled>
             </AutoLogon>
             <FirstLogonCommands>
@@ -150,9 +150,9 @@
                     <Description>Disable Hibernation Mode</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c wmic useraccount where "name='vagrant'" set PasswordExpires=FALSE</CommandLine>
+                    <CommandLine>cmd.exe /c wmic useraccount where "name='decent_ci'" set PasswordExpires=FALSE</CommandLine>
                     <Order>22</Order>
-                    <Description>Disable password expiration for vagrant user</Description>
+                    <Description>Disable password expiration for decent_ci user</Description>
                 </SynchronousCommand>
                 <!-- WITHOUT WINDOWS UPDATES -->
                 <!--
@@ -174,25 +174,46 @@
                 <!-- Disable automatic updates so the system update process doesn't interfere with the update script -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB3102810.bat</CommandLine>
-                    <Order>97</Order>
+                    <Order>90</Order>
                     <Description>Install Windows Update Hotfix (KB3102810)</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c a:\hotfix-KB3020369.bat</CommandLine>
+                    <Order>91</Order>
+                    <Description>Install Windows Update Hotfix (KB3020369)</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c a:\hotfix-KB2621440.bat</CommandLine>
+                    <Order>92</Order>
+                    <Description>Install Windows Update Hotfix (KB2621440)</Description>
+                </SynchronousCommand>
+
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c a:\hotfix-KB3125574.bat</CommandLine>
+                    <Order>93</Order>
+                    <Description>Install Windows 7 Roll-up updates (KB3125574)</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\microsoft-updates.bat</CommandLine>
-                    <Order>98</Order>
+                    <Order>94</Order>
                     <Description>Enable Microsoft Updates</Description>
                 </SynchronousCommand>
-		
-		<!--
+
+
+<!--
+
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\win-updates.ps1 -MaxUpdatesPerCycle 100 -RestartRequired 1</CommandLine>
                     <Description>Install Windows Updates</Description>
                     <Order>100</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
-		-->
+-->
 
                 <!-- END WITH WINDOWS UPDATES -->
+
+
+
                 <!-- WINRM SETUP -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c winrm quickconfig -q</CommandLine>
@@ -245,31 +266,31 @@
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c netsh advfirewall firewall set rule group="remote administration" new enable=yes </CommandLine>
                     <Description>Win RM adv firewall enable</Description>
-                    <Order>208</Order>
+                    <Order>210</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c netsh firewall add portopening TCP 5985 "Port 5985" </CommandLine>
                     <Description>Win RM port open</Description>
-                    <Order>209</Order>
+                    <Order>212</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c net stop winrm </CommandLine>
                     <Description>Stop Win RM Service </Description>
-                    <Order>210</Order>
+                    <Order>213</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c sc config winrm start= auto</CommandLine>
                     <Description>Win RM Autostart</Description>
-                    <Order>211</Order>
+                    <Order>214</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c net start winrm</CommandLine>
                     <Description>Start Win RM Service</Description>
-                    <Order>212</Order>
+                    <Order>215</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <!-- END WINRM SETUP -->
@@ -284,7 +305,7 @@
                 <HelpCustomized>false</HelpCustomized>
             </OEMInformation>
             <!-- Rename computer here. -->
-            <ComputerName>vagrant-7</ComputerName>
+            <ComputerName>decent_ci-7</ComputerName>
             <TimeZone>Pacific Standard Time</TimeZone>
             <RegisteredOwner/>
         </component>

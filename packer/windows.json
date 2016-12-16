@@ -17,6 +17,7 @@
     {
       "type" : "virtualbox-iso",
       "guest_os_type" : "Windows7_64",
+      "guest_additions_mode" : "disable",
       "vm_name" : "{{user `name`}}-virtualbox",
 
       "vboxmanage" : [
@@ -41,15 +42,22 @@
       "winrm_username" : "{{user `ssh_name`}}",
       "winrm_password" : "{{user `ssh_pass`}}",
       "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
+
 
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "post_shutdown_delay" : "1m",
 
       "disk_size": 61440,
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/dis-updates.ps1",
 	"./scripts/hotfix-KB3102810.bat",
-        "./scripts/microsoft-updates.bat",
+       	"./scripts/hotfix-KB3020369.bat",
+       	"./scripts/hotfix-KB3125574.bat",
+       	"./scripts/hotfix-KB2621440.bat",
+	"./scripts/microsoft-updates.bat",
 	"./scripts/win-updates.ps1"
       ]
 
@@ -102,32 +110,18 @@
     { 
       "type" : "file",
       "source" : "decent_ci_config.yaml",
-      "destination" : "/tmp/decent_ci_config.yaml"
-      },
-    
+      "destination" : "C:/Windows/Temp/decent_ci_config.yaml"
+    },
     {
-      "type" : "shell",
-      "execute_command" : "echo {{user `ssh_pass`}} | {{ .Vars }} sudo -E -S bash '{{.Path}}'",
-
-      "override" : {
-        "virtualbox-iso" : {
-          "environment_vars" : [
-            "SSH_USERNAME={{user `ssh_name`}}"
-          ],
-          "scripts" : [
-            "decent_ci_setup.sh",
-            "virtualbox.sh"
-          ]
-        },
-        "vmware-iso" : {
-          "environment_vars" : [
-            "SSH_USERNAME={{user `ssh_name`}}"
-          ],
-          "scripts" : [
-            "decent_ci_setup.sh"
-          ]
-        }
-      }
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "inline" : [
+        "Start-Sleep -seconds 5",
+	"& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
+	"Start-Sleep -seconds 5",
+        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+      ]
 
     }
   ],

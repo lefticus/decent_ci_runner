@@ -2,20 +2,23 @@
   "variables" : {
     "ssh_name" : "decent_ci",
     "ssh_pass" : "decent_ci",
-    "hostname" : "decent-ci-ubuntu-14-04",
+    "hostname" : "decent-ci-windows7-64",
     "disk_size" : "40000",
-    "iso_url" : "ubuntu-14.04.4-server-amd64.iso",
-    "iso_checksum" : "2ac1f3e0de626e54d05065d6f549fa3a",
+    "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
+    "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
     "iso_checksum_type" : "md5",
     "memory" : "4096",
     "cpu_cores" : "4",
-    "name" : "decent_ci-ubuntu-14.04"
+    "name" : "bootstrap-windows7-64",
+    "autounattend": "Autounattend.xml"
   },
 
   "builders" : [
     {
       "type" : "virtualbox-iso",
-      "guest_os_type" : "Ubuntu_64",
+      "format" : "ova",
+      "guest_os_type" : "Windows7_64",
+      "guest_additions_mode" : "disable",
       "vm_name" : "{{user `name`}}-virtualbox",
 
       "vboxmanage" : [
@@ -36,23 +39,29 @@
 
       "boot_wait" : "10s",
 
-      "ssh_username" : "{{user `ssh_name`}}",
-      "ssh_password" : "{{user `ssh_pass`}}",
-      "ssh_wait_timeout" : "20m",
+      "communicator" : "winrm",
+      "winrm_username" : "{{user `ssh_name`}}",
+      "winrm_password" : "{{user `ssh_pass`}}",
+      "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
 
-      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
 
-      "boot_command" : [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz noapic ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname={{user `hostname`}} ",
-        "fb=false debconf/frontend=noninteractive ",
-        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-        "initrd=/install/initrd.gz -- <enter>"
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "post_shutdown_delay" : "1m",
+
+      "disk_size": 61440,
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/dis-updates.ps1",
+	"./scripts/hotfix-KB3102810.bat",
+       	"./scripts/hotfix-KB3020369.bat",
+       	"./scripts/hotfix-KB3125574.bat",
+       	"./scripts/hotfix-KB2621440.bat",
+	"./scripts/microsoft-updates.bat",
+	"./scripts/win-updates.ps1"
       ]
+
     },
     {
       "type" : "vmware-iso",
@@ -99,43 +108,18 @@
   ],
 
   "provisioners" : [
-    { 
-      "type" : "file",
-      "source" : "decent_ci_config.yaml",
-      "destination" : "/tmp/decent_ci_config.yaml"
-    },
-    
     {
-      "type" : "shell",
-      "execute_command" : "echo {{user `ssh_pass`}} | {{ .Vars }} sudo -E -S bash '{{.Path}}'",
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "inline" : [
+        "Start-Sleep -seconds 5",
+	"& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
+	"Start-Sleep -seconds 5",
+        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))",
+	"choco install --yes --acceptlicense git"
+      ]
 
-      "override" : {
-        "virtualbox-iso" : {
-          "environment_vars" : [
-            "SSH_USERNAME={{user `ssh_name`}}"
-          ],
-          "scripts" : [
-            "decent_ci_setup.sh",
-            "virtualbox.sh"
-          ]
-        },
-        "vmware-iso" : {
-          "environment_vars" : [
-            "SSH_USERNAME={{user `ssh_name`}}"
-          ],
-          "scripts" : [
-            "decent_ci_setup.sh"
-          ]
-        }
-      }
-
-    }
-  ],
-  
-  "post-processors" : [
-    {
-      "type" : "compress",
-      "output" : "{{user `name`}}-{{.BuildName}}.zip"
     }
   ]
   

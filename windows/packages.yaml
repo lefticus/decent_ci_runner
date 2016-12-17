@@ -44,15 +44,13 @@ packages:
 
   - name: boost
     source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
+    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
     check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
-    message: "Accept default settings for installing boost 32bit"
 
   - name: boost
     source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
+    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
     check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
-    message: "Accept default settings for installing boost 64bit"
 
   - name: mingw
     source: script

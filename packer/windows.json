@@ -4,19 +4,18 @@
     "ssh_pass" : "decent_ci",
     "hostname" : "decent-ci-windows7-64",
     "disk_size" : "40000",
-    "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
     "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
     "iso_checksum_type" : "md5",
     "memory" : "4096",
     "cpu_cores" : "4",
-    "name" : "decent_ci-windows7-64",
-    "autounattend": "Autounattend.xml"
+    "name" : "decent_ci-windows7-64"
   },
 
   "builders" : [
     {
-      "type" : "virtualbox-iso",
-      "guest_os_type" : "Windows7_64",
+      "type" : "virtualbox-ovf",
+      "format" : "ova",
+      "source_path" : "output-virtualbox-iso/bootstrap-windows7-64-virtualbox.ova",
       "guest_additions_mode" : "disable",
       "vm_name" : "{{user `name`}}-virtualbox",
 
@@ -26,11 +25,6 @@
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
       ],
 
-      "disk_size" : "{{user `disk_size`}}",
-
-      "iso_url" : "{{user `iso_url`}}",
-      "iso_checksum" : "{{user `iso_checksum`}}",
-      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
 
       "http_directory" : ".",
       "http_port_min" : 9001,
@@ -47,24 +41,11 @@
 
 
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "post_shutdown_delay" : "1m",
-
-      "disk_size": 61440,
-      "floppy_files": [
-        "{{user `autounattend`}}",
-        "./scripts/dis-updates.ps1",
-	"./scripts/hotfix-KB3102810.bat",
-       	"./scripts/hotfix-KB3020369.bat",
-       	"./scripts/hotfix-KB3125574.bat",
-       	"./scripts/hotfix-KB2621440.bat",
-	"./scripts/microsoft-updates.bat",
-	"./scripts/win-updates.ps1"
-      ]
+      "post_shutdown_delay" : "1m"
 
     },
     {
       "type" : "vmware-iso",
-      "guest_os_type" : "ubuntu-64",
       "vm_name" : "{{user `name`}}-vmware",
 
       "vmx_data" : {
@@ -73,7 +54,6 @@
         "numvcpus" : "{{user `cpu_cores`}}"
       },
 
-      "disk_size" : "{{user `disk_size`}}",
 
       "iso_url" : "{{user `iso_url`}}",
       "iso_checksum" : "{{user `iso_checksum`}}",
@@ -113,26 +93,19 @@
       "destination" : "C:/Windows/Temp/decent_ci_config.yaml"
     },
     {
-      "type" : "powershell",
-      "elevated_user" : "{{user `ssh_name`}}",
-      "elevated_password" : "{{user `ssh_pass`}}",
-      "inline" : [
-        "Start-Sleep -seconds 5",
-	"& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
-	"Start-Sleep -seconds 5",
-        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
-      ]
+      "type" : "windows-shell",
 
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false\"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false\"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false\""
+      ]
+        
     }
-  ],
-  
-  "post-processors" : [
-    {
-      "type" : "compress",
-      "output" : "{{user `name`}}-{{.BuildName}}.zip"
-    }
+    
   ]
   
+ 
   
 
 }

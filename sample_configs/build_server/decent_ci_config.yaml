@@ -5,7 +5,7 @@
 #run_dir: "C:/CI"
 #run_dir: /Users/jason/decent_ci_run_dir
 run_dir: "/home/jason/decent_ci_run_dir"
-branch_name: "security_enhancements"
+branch_name: "add_windows_packer"
 environment: 
 #  DECENT_CI_SKIP_DAILY_TASKS: false
 #  DECENT_CI_SKIP_TEST: false

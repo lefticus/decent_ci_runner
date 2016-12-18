@@ -1,4 +1,4 @@
-Important Note: Currently this branch is hardcoded to use the "security_enhancements" branch of decent_ci and decent_ci_runner. This will need to be changed before merging
+Important Note: Currently this branch is hardcoded to use the "add_windows_packer" branch of decent_ci and decent_ci_runner. This will need to be changed before merging
 
 To build a CI image of Linux Ubuntu 14.04
 

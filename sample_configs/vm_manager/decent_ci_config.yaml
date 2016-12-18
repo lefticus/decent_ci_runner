@@ -3,7 +3,7 @@
 # On Linux copy into /usr/local/etc and update
 
 run_dir: "/home/jason/decent_ci_run_dir"
-branch_name: "security_enhancements"
+branch_name: "add_windows_packer"
 
 virtual_machine_manager_only: true
 

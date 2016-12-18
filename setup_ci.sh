@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BRANCH_NAME=security_enhancements
+BRANCH_NAME=add_windows_packer
 
 if [ "$#" -lt 2 ]
 then

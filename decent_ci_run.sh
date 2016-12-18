@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-BRANCH_NAME=security_enhancements
+BRANCH_NAME=add_windows_packer
 
 echo "Running as `whoami`"
 ISWINDOWS=0

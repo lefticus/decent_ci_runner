@@ -30,11 +30,11 @@ packages:
     source: choco
   - name: NSSM
     source: choco
-  - name: EnergyPlus
-    source: script
-    script: bash -c "wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
-    check_file: "c:/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp"
-    message: "Accept default settings for installing EnergyPlus"
+#  - name: EnergyPlus
+#    source: script
+#    script: bash -c "wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
+#    check_file: "c:/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp"
+#    message: "Accept default settings for installing EnergyPlus"
 
 #  - name: Qt
 #    source: script
@@ -54,15 +54,13 @@ packages:
 
   - name: mingw
     source: script
-    script:  bash -c "wget http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download -qO /tmp/mingw-get-setup.exe && elevate -w /tmp/mingw-get-setup.exe ; rm  /tmp/mingw-get-setup.exe"
+    script: bash -c "wget http://downloads.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -qO /tmp/mingw-get.zip && elevate -w mkdir /c/MinGW && cd /c/MinGW && unzip -o -qq /tmp/mingw-get.zip && bin/mingw-get install mingw32-base mingw32-gcc-fortran"
     check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
-    message: "Make sure gfortran and base are selected"
     
   - name: miktex
     source: script
-    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/setup-2.9.5870.exe -qO /tmp/miktex-setup.exe && elevate -w /tmp/miktex-setup.exe ; rm  /tmp/miktex-setup.exe"
+    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose; rm -rf ~/Desktop/MikTeX\\ Download\\ Files; rm -rf /c/Program\\ Files\\ (x86)/MiKTeX\\ 2.9/doc"
     check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
-    message: "Make sure all packages are installed for all users"
     
     
 

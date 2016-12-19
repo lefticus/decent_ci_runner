@@ -101,7 +101,10 @@ then
     /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w -c $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --allow-empty-checksums --yes --acceptlicense NSSM
 fi
 
-gem install deep_merge --source http://rubygems.org
+elevate gem install rubygems-update --source http://rubygems.org
+elevate update_rubygems
+elevate gem install deep_merge --source http://rubygems.org
+
 
 exit 0
 

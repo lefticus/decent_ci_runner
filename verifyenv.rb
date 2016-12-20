@@ -236,6 +236,7 @@ def install_choco(to_install)
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
+        puts("Scheduling choco install of: #{package[1]}")
         file.write("<package id='" + package[1] + "'")
         if package[2] != nil then
           file.write(" version='" + package[2] + "'")
@@ -282,7 +283,7 @@ def install_gem_pip(to_install)
         if gemname.start_with?("gem")
           cur_string += " --no-rdoc --no-ri"
         end
-        
+        puts("Scheduling #{gemname} install of: #{cur_string}")
         puts(execute("#{cur_string}"))
       end
     } 

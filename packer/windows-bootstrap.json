@@ -3,7 +3,7 @@
     "ssh_name" : "decent_ci",
     "ssh_pass" : "decent_ci",
     "hostname" : "decent-ci-windows7-64",
-    "disk_size" : "40000",
+    "disk_size" : "80000",
     "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
     "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
     "iso_checksum_type" : "md5",

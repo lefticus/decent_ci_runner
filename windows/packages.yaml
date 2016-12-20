@@ -3,8 +3,6 @@ packages:
     source: choco
   - name: octokit
     source: gem
-  - name: activesupport
-    source: gem
   - name: le
     source: gem
   - name: python2

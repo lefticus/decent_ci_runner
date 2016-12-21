@@ -324,7 +324,7 @@ needed_packages.each{ |needed|
     end
   else
     found_packages.each{ |found|
-      if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1] == found[1] then
+      if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1].casecmp(found[1]) == 0 then
         if (needed[2] == nil || needed[2] == "" || needed[2] == found[2]) then
           is_installed = true
           break

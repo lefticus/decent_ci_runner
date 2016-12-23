@@ -1,0 +1,253 @@
+{
+  "variables" : {
+    "ssh_name" : "decent_ci",
+    "ssh_pass" : "decent_ci",
+    "hostname" : "decent-ci-windows7-64",
+    "disk_size" : "80000",
+    "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
+    "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
+    "iso_checksum_type" : "md5",
+    "memory" : "4096",
+    "cpu_cores" : "4",
+    "name" : "bootstrap-windows7-64",
+    "autounattend": "Autounattend.xml"
+  },
+
+  "builders" : [
+    {
+      "type" : "virtualbox-iso",
+      "format" : "ova",
+      "guest_os_type" : "Windows7_64",
+      "guest_additions_mode" : "disable",
+      "vm_name" : "{{user `name`}}-virtualbox",
+
+      "vboxmanage" : [
+        ["modifyvm", "{{.Name}}", "--vram", "32"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
+      ],
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "communicator" : "winrm",
+      "winrm_username" : "{{user `ssh_name`}}",
+      "winrm_password" : "{{user `ssh_pass`}}",
+      "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
+
+
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "post_shutdown_delay" : "1m",
+
+      "disk_size": 61440,
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/dis-updates.ps1",
+	"./scripts/hotfix-KB3102810.bat",
+       	"./scripts/hotfix-KB3020369.bat",
+       	"./scripts/hotfix-KB3125574.bat",
+       	"./scripts/hotfix-KB2621440.bat",
+	"./scripts/microsoft-updates.bat",
+	"./scripts/win-updates.ps1"
+      ]
+
+    },
+    {
+      "type" : "vmware-iso",
+      "guest_os_type" : "ubuntu-64",
+      "vm_name" : "{{user `name`}}-vmware",
+
+      "vmx_data" : {
+        "cpuid.coresPerSocket" : "1",
+        "memsize" : "{{user `memory`}}",
+        "numvcpus" : "{{user `cpu_cores`}}"
+      },
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "ssh_username" : "{{user `ssh_name`}}",
+      "ssh_password" : "{{user `ssh_pass`}}",
+      "ssh_wait_timeout" : "20m",
+
+      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+      "boot_command" : [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{user `hostname`}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+        "initrd=/install/initrd.gz -- <enter>"
+      ]
+    }
+
+  ],
+
+  "provisioners" : [
+    {
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "inline" : [
+        "Start-Sleep -seconds 5",
+	      "& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
+	      "Start-Sleep -seconds 5",
+        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))",
+	      "choco install --yes --acceptlicense git"
+      ]
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "powershell",
+      "inline" : [
+	      "& 'c:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\devenv.exe'",
+	      "Start-Sleep -seconds 60"
+      ]
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    },
+    {
+      "type" : "windows-shell",
+
+      "inline" : [
+        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false \""
+      ]
+        
+    },
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"      
+    }
+   ]
+  
+  
+
+}

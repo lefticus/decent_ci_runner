@@ -57,7 +57,7 @@ packages:
     
   - name: miktex
     source: script
-    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose; rm -rf ~/Desktop/MikTeX\\ Download\\ Files; rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
+    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=basic --verbose && cd /c/Program\\ Files/MiKTeX\\ 2.9/bin/x64 && ./mpm --install amssymb; ./mpm --install amsmath; ./mpm --install mathspec; ./mpm --install geometry; ./mpm --install graphicx; ./mpm --install grffile; ./mpm --install xcolor; ./mpm --install framed; ./mpm --install longtable; ./mpm --install booktabs; ./mpm --install listings; ./mpm --install hyperref; ./mpm --install newtxtext; ./mpm --install newtxmath; ./mpm --install siunitx; rm -rf ~/Desktop/MikTeX\\ Download\\ Files; rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
     check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
     
     

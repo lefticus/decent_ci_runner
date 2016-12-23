@@ -3,7 +3,7 @@
     "ssh_name" : "decent_ci",
     "ssh_pass" : "decent_ci",
     "hostname" : "decent-ci-windows7-64",
-    "disk_size" : "80000",
+    "disk_size" : "100000",
     "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
     "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
     "iso_checksum_type" : "md5",
@@ -210,13 +210,6 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
         
-    },
-    {
-      "type" : "powershell",
-      "inline" : [
-	      "& 'c:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\devenv.exe'",
-	      "Start-Sleep -seconds 60"
-      ]
     },
     {
       "type" : "windows-restart",

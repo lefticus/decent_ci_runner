@@ -50,7 +50,6 @@
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "post_shutdown_delay" : "1m",
 
-      "disk_size": 61440,
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/dis-updates.ps1",

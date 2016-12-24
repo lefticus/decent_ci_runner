@@ -3,13 +3,13 @@
     "ssh_name" : "decent_ci",
     "ssh_pass" : "decent_ci",
     "hostname" : "decent-ci-windows7-64",
-    "disk_size" : "100000",
+    "disk_size" : "80000",
     "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
     "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
     "iso_checksum_type" : "md5",
     "memory" : "4096",
     "cpu_cores" : "4",
-    "name" : "bootstrap-windows7-64",
+    "name" : "decent_ci-windows7-64",
     "autounattend": "Autounattend.xml"
   },
 
@@ -17,6 +17,7 @@
     {
       "type" : "virtualbox-iso",
       "format" : "ova",
+      "disk_size" : "{{user `disk_size`}}",
       "guest_os_type" : "Windows7_64",
       "guest_additions_mode" : "disable",
       "vm_name" : "{{user `name`}}-virtualbox",
@@ -27,7 +28,6 @@
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
       ],
 
-      "disk_size" : "{{user `disk_size`}}",
 
       "iso_url" : "{{user `iso_url`}}",
       "iso_checksum" : "{{user `iso_checksum`}}",
@@ -50,7 +50,6 @@
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "post_shutdown_delay" : "1m",
 
-      "disk_size": 61440,
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/dis-updates.ps1",

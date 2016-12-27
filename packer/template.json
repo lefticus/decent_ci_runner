@@ -1,0 +1,147 @@
+{
+  "builders": [
+    {
+      "boot_wait": "5s",
+      "disk_size": 40960,
+      "guest_os_type": "win-8",
+      "iso_checksum_type": "none",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo '{{user `username`}}'|sudo -S shutdown -h now",
+      "ssh_port": 22,
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "10000s",
+      "parallels_tools_flavor": "mac",
+      "type": "parallels-iso",
+      "prlctl": [
+        ["set", "{{.Name}}", "--memsize", "2048"],
+        ["set", "{{.Name}}", "--memquota", "512:2048"],
+        ["set", "{{.Name}}", "--cpus", "2"],
+        ["set", "{{.Name}}", "--distribution", "macosx"],
+        ["set", "{{.Name}}", "--3d-accelerate", "highest"],
+        ["set", "{{.Name}}", "--high-resolution", "off"],
+        ["set", "{{.Name}}", "--auto-share-camera", "off"],
+        ["set", "{{.Name}}", "--auto-share-bluetooth", "off"],
+        ["set", "{{.Name}}", "--on-window-close", "keep-running"],
+        ["set", "{{.Name}}", "--shf-host", "off"]
+      ]
+    },
+    {
+      "boot_wait": "2s",
+      "disk_size": 40960,
+      "guest_os_type": "darwin12-64",
+      "iso_checksum_type": "none",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo '{{user `username`}}'|sudo -S shutdown -h now",
+      "skip_compaction": true,
+      "ssh_port": 22,
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "darwin",
+      "type": "vmware-iso",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "2048",
+        "numvcpus": "1",
+        "firmware": "efi",
+        "keyboardAndMouseProfile": "macProfile",
+        "smc.present": "TRUE",
+        "hpet0.present": "TRUE",
+        "ich7m.present": "TRUE",
+        "ehci.present": "TRUE",
+        "usb.present": "TRUE"
+      }
+    },
+    {
+      "boot_wait": "2s",
+      "disk_size": 40960,
+      "guest_additions_mode": "disable",
+      "guest_os_type": "MacOS1011_64",
+      "hard_drive_interface": "sata",
+      "iso_checksum_type": "none",
+      "iso_interface": "sata",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo '{{user `username`}}'|sudo -S shutdown -h now",
+      "ssh_port": 22,
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--audiocontroller", "hda"],
+        ["modifyvm", "{{.Name}}", "--boot1", "dvd"],
+        ["modifyvm", "{{.Name}}", "--boot2", "disk"],
+        ["modifyvm", "{{.Name}}", "--chipset", "ich9"],
+        ["modifyvm", "{{.Name}}", "--firmware", "efi"],
+        ["modifyvm", "{{.Name}}", "--hpet", "on"],
+        ["modifyvm", "{{.Name}}", "--keyboard", "usb"],
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
+        ["modifyvm", "{{.Name}}", "--usbehci", "on"],
+        ["modifyvm", "{{.Name}}", "--vram", "128"],
+        ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"]
+      ]
+    }
+  ],
+  "min_packer_version": "0.7.0",
+  "post-processors": [
+    "vagrant"
+  ],
+  "provisioners": [
+    {
+      "type": "shell-local",
+      "command": "sleep {{user `provisioning_delay`}}"
+    },
+    {
+      "destination": "/private/tmp/set_kcpassword.py",
+      "source": "../scripts/support/set_kcpassword.py",
+      "type": "file"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "scripts": [
+        "../scripts/vagrant.sh",
+        "../scripts/vmware.sh",
+        "../scripts/parallels.sh",
+        "../scripts/xcode-cli-tools.sh",
+        "../scripts/chef-omnibus.sh",
+        "../scripts/puppet.sh",
+        "../scripts/add-network-interface-detection.sh",
+        "../scripts/autologin.sh",
+        "../scripts/system-update.sh",
+        "../scripts/shrink.sh"
+      ],
+      "environment_vars": [
+        "AUTOLOGIN={{user `autologin`}}",
+        "CHEF_VERSION={{user `chef_version`}}",
+        "FACTER_VERSION={{user `facter_version`}}",
+        "HIERA_VERSION={{user `hiera_version`}}",
+        "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
+        "NOCM={{user `nocm`}}",
+        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
+        "PASSWORD={{user `password`}}",
+        "PUPPET_VERSION={{user `puppet_version`}}",
+        "PUPPET_AGENT_VERSION={{user `puppet_agent_version`}}",
+        "UPDATE_SYSTEM={{user `update_system`}}",
+        "USERNAME={{user `username`}}"
+      ],
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "autologin": "false",
+    "chef_version": "none",
+    "facter_version": "none",
+    "hiera_version": "none",
+    "install_vagrant_keys": "true",
+    "install_xcode_cli_tools": "true",
+    "iso_url": "OSX_InstallESD_10.11.1_15B42.dmg",
+    "password": "vagrant",
+    "provisioning_delay": "0",
+    "puppet_version": "none",
+    "puppet_agent_version": "none",
+    "update_system": "true",
+    "username": "vagrant"
+  }
+}

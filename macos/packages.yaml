@@ -24,11 +24,7 @@ packages:
 
   - name: packagemaker
     source: script
-    script: "echo;echo;echo;echo;
-             echo \"************************************************************************************************************\";
-             echo \"You must install PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'\";
-             echo \"************************************************************************************************************\";
-             exit 1;"
+    script: xzdec macos/auxtools.dmg.xz > auxtools.dmg && hdiutil attach auxtools.dmg && cp -av /Volumes/Auxillary\\ Tools/PackageMaker.app /Applications; hdiutil detach /Volumes/Auxillary\\ Tools; rm auxtools.dmg
     check_file: /Applications/PackageMaker.app
 
 

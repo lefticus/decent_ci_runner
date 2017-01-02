@@ -34,11 +34,11 @@ then
   TOOL="wget -O -"
 elif [ `uname` == "Darwin" ]
 then
-  if [ ! -d "/Applications/XCode.app" ] 
-  then
-    echo "You Must install XCode before continuing"
-    exit 2
-  fi
+#  if [ ! -d "/Applications/XCode.app" ] 
+#  then
+#    echo "You Must install XCode before continuing"
+#    exit 2
+#  fi
 
   RUNFILE=macos/bootstrap.sh
   RUBY=ruby

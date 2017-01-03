@@ -53,12 +53,12 @@
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/dis-updates.ps1",
-	"./scripts/hotfix-KB3102810.bat",
-       	"./scripts/hotfix-KB3020369.bat",
-       	"./scripts/hotfix-KB3125574.bat",
-       	"./scripts/hotfix-KB2621440.bat",
-	"./scripts/microsoft-updates.bat",
-	"./scripts/win-updates.ps1"
+        "./scripts/hotfix-KB3102810.bat",
+        "./scripts/hotfix-KB3020369.bat",
+        "./scripts/hotfix-KB3125574.bat",
+        "./scripts/hotfix-KB2621440.bat",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/win-updates.ps1"
       ]
 
     },
@@ -113,15 +113,15 @@
       "elevated_password" : "{{user `ssh_pass`}}",
       "inline" : [
         "Start-Sleep -seconds 5",
-	      "& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
-	      "Start-Sleep -seconds 5",
+        "& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
+        "Start-Sleep -seconds 5",
         "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))",
-	      "choco install --yes --acceptlicense git"
+        "choco install --yes --acceptlicense git"
       ]
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -130,11 +130,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -143,11 +142,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -156,11 +154,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -169,11 +166,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -182,11 +178,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -195,11 +190,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -208,11 +202,10 @@
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -220,11 +213,10 @@
       "inline" : [
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     },
     {
       "type" : "windows-shell",
@@ -232,14 +224,10 @@
       "inline" : [
         "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false \""
       ]
-        
     },
     {
       "type" : "windows-restart",
-      "restart_timeout" : "15m"      
+      "restart_timeout" : "15m"
     }
    ]
-  
-  
-
 }

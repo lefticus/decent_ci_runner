@@ -88,7 +88,7 @@ then
   if [ $ISADMIN ]
   then
     echo "Installing the 'elevate' and 'ruby' tool https://chocolatey.org/packages/elevate.native"
-    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense elevate.native ruby
+    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense elevate.native ruby
     exit 1
   else
     echo "You must run this process from an administrative bash console to install 'elevate' and 'ruby'"
@@ -98,7 +98,7 @@ fi
 
 if [ $HAS_NSSM -eq 0 ]
 then
-    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w -c $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --allow-empty-checksums --yes --acceptlicense NSSM
+    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w -c $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --allow-empty-checksums --yes --acceptlicense NSSM
 fi
 
 elevate gem install rubygems-update --source http://rubygems.org

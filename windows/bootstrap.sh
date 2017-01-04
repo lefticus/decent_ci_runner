@@ -87,8 +87,18 @@ then
 
   if [ $ISADMIN ]
   then
-    echo "Installing the 'elevate' and 'ruby' tool https://chocolatey.org/packages/elevate.native"
-    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense elevate.native ruby
+    if [ $HAS_ELEVATE -eq 0 ]
+    then
+      echo "Installing the 'elevate' tool https://chocolatey.org/packages/elevate.native"
+      /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense elevate.native
+    fi
+
+    if [ $HAS_RUBY -eq 0 ]
+    then
+      echo "Installing 'ruby'"
+      /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense ruby
+    fi
+
     exit 1
   else
     echo "You must run this process from an administrative bash console to install 'elevate' and 'ruby'"

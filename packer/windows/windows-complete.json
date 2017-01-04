@@ -120,6 +120,11 @@
       ]
     },
     {
+      "type" : "file",
+      "source" : "elevate.exe",
+      "destination" : "c:/ProgramData/Chocolatey/bin/elevate.exe"
+    },
+    {
       "type" : "windows-restart",
       "restart_timeout" : "15m"
     },

@@ -24,7 +24,7 @@ packages:
 
   - name: packagemaker
     source: script
-    script: xzdec macos/auxtools.dmg.xz > auxtools.dmg && hdiutil attach auxtools.dmg && cp -av /Volumes/Auxillary\ Tools/PackageMaker.app /Applications; hdiutil detach /Volumes/Auxillary\ Tools; rm auxtools.dmg
+    script: xzdec macos/auxtools.dmg.xz > auxtools.dmg && hdiutil attach auxtools.dmg && cp -av /Volumes/Auxiliary\ Tools/PackageMaker.app /Applications; hdiutil detach /Volumes/Auxiliary\ Tools; rm auxtools.dmg
     check_file: /Applications/PackageMaker.app
 
 

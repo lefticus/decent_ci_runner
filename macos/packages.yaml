@@ -2,10 +2,10 @@
 
 packages:
 
-  - name: EnergyPlus
-    source: script
-    script: FILE=`mktemp -d EnergyPlus.XXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -Lo $FILE/EnergyPlus.dmg && hdiutil attach $FILE/EnergyPlus.dmg && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 && sudo touch /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm -rf $FILE
-    check_file: /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
+  #  - name: EnergyPlus
+  #    source: script
+  #    script: FILE=`mktemp -d EnergyPlus.XXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -Lo $FILE/EnergyPlus.dmg && hdiutil attach $FILE/EnergyPlus.dmg && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 && sudo touch /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm -rf $FILE
+  #    check_file: /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
 
   - name: wkhtmltox
     source: script

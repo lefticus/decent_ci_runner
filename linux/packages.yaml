@@ -19,12 +19,12 @@ packages:
     source: apt
   - name: cmake-curses-gui 
     source: apt
-  - name: qt5-default 
-    source: apt 
-  - name: libqt5webkit5-dev 
-    source: apt
-  - name: libboost1.55-all-dev 
-    source: apt
+#  - name: qt5-default 
+#    source: apt 
+#  - name: libqt5webkit5-dev 
+#    source: apt
+#  - name: libboost1.55-all-dev 
+#    source: apt
   - name: ruby2.0 
     source: apt
   - name: libssl-dev
@@ -70,10 +70,10 @@ packages:
   - name: texlive-full
     source: apt
 
-  - name: EnergyPlus
-    source: script
-    script: FILE=`mktemp`; FILE2=`mktemp`; /bin/echo -en "y\n\nn\n" > $FILE2; cat $FILE2; wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh -qO $FILE && sudo sh $FILE < $FILE2 && sudo touch /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp; rm $FILE; rm $FILE2
-    check_file: /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
+#  - name: EnergyPlus
+#    source: script
+#    script: FILE=`mktemp`; FILE2=`mktemp`; /bin/echo -en "y\n\nn\n" > $FILE2; cat $FILE2; wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh -qO $FILE && sudo sh $FILE < $FILE2 && sudo touch /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp; rm $FILE; rm $FILE2
+#    check_file: /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
 
   - name: wkhtmltox
     source: dpkg

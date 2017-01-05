@@ -40,28 +40,30 @@ packages:
 #    check_file: [ "c:/Qt/5.3/msvc2013_64_opengl", "c:/Qt/5.3/msvc2013_opengl" ]
 #    message: "Make sure version 5.3 msvc2013 opengl 64bit and 32bit are selected"
 
-  - name: boost
-    source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
-    check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
+#  - name: boost
+#    source: script
+#    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
+#    check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
 
-  - name: boost
-    source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
-    check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
+#  - name: boost
+#    source: script
+#    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe //verysilent ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
+#    check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
 
   - name: mingw
     source: script
     script: bash -c "wget http://downloads.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -qO /tmp/mingw-get.zip && elevate -w mkdir /c/MinGW && cd /c/MinGW && unzip -o -qq /tmp/mingw-get.zip && bin/mingw-get install mingw32-base mingw32-gcc-fortran"
     check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
-    
-  - name: miktex
-    source: script
-    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose && rm -rf ~/Desktop/MikTeX\\ Download\\ Files && rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
+
+
+  - name: miktex.portable
+    source: choco
+
+#  - name: miktex
+#    source: script
+#    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose && rm -rf ~/Desktop/MikTeX\\ Download\\ Files && rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
 #    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6100.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=basic --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=basic --verbose && /usr/bin/echo amssymb\\\namsmath\\\nmathspec\\\ngeometry\\\ngraphicx\\\ngrffile\\\nxcolor\\\nframed\\\nlongtable\\\nbooktabs\\\nlistings\\\nhyperref\\\nnewtxtext\\\nnewtxmath\\\nsiunitx; /c/Program\\ Files \\(x86\\)/MiKTeX\\ 2.9/bin/mpm --install-some /tmp/mpmpackages; rm -rf ~/Desktop/MikTeX\\ Download\\ Files; rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
-    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
-    
-    
+#    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
 
 
 

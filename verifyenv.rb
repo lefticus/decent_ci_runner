@@ -233,10 +233,20 @@ def install_choco(to_install)
     file.write("<?xml version='1.0' encoding='utf-8'?>\n")
     file.write("<packages>\n")
     something_to_do = false
+    visual_studio = false
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
         puts("Scheduling choco install of: #{package[1]}")
+
+        if package[1].downcase.include? "visualstudio"
+          if visual_studio
+            next
+          else
+            visual_studio = true
+          end
+        end
+
         file.write("<package id='" + package[1] + "'")
         if package[2] != nil then
           file.write(" version='" + package[2] + "'")

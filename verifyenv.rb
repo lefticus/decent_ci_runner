@@ -233,26 +233,41 @@ def install_choco(to_install)
     file.write("<?xml version='1.0' encoding='utf-8'?>\n")
     file.write("<packages>\n")
     something_to_do = false
+#    visual_studio = false
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
+
+ #       if package[1].downcase.include? "visualstudio" or package[1].downcase.include? "vs2013"
+ #         if visual_studio
+ #           next
+ #         else
+ #           visual_studio = true
+ #         end
+ #       end
+
         puts("Scheduling choco install of: #{package[1]}")
+
+        execstring = package[1];
         file.write("<package id='" + package[1] + "'")
         if package[2] != nil then
+          execstring = "#{execstring} --version #{package[2]}"
           file.write(" version='" + package[2] + "'")
         end
         if package[7] != nil then
+          execstring = "#{execstring} --params=\"#{package[7]}\""
           file.write(" packageParameters='" + package[7] + "'")
         end
         file.write(" />\n")
+        puts(execute("#{SUDO_TOOL} choco install #{execstring} --yes --acceptlicense"))
       end
     }
     file.write("</packages>\n");
     file.close()
 
-    if something_to_do then
-      puts(execute("#{SUDO_TOOL} choco install --yes --acceptlicense #{file.path}"))
-    end
+#    if something_to_do then
+#      puts(execute("#{SUDO_TOOL} choco install --yes --acceptlicense #{file.path}"))
+#    end
   }
 end
 

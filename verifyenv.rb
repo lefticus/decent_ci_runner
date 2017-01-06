@@ -237,15 +237,16 @@ def install_choco(to_install)
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
-        puts("Scheduling choco install of: #{package[1]}")
 
-        if package[1].downcase.include? "visualstudio"
+        if package[1].downcase.include? "visualstudio" or package[1].downcase.include? "vs2013"
           if visual_studio
             next
           else
             visual_studio = true
           end
         end
+
+        puts("Scheduling choco install of: #{package[1]}")
 
         file.write("<package id='" + package[1] + "'")
         if package[2] != nil then

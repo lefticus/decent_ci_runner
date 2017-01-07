@@ -19,7 +19,7 @@ packages:
 
   - name: nsis
     source: script
-    script: bash -c "wget --no-check-certificate https://iweb.dl.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-setup.exe && wget --no-check-certificate https://iweb.dl.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-log.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && unzip -u /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
+    script: bash -c "wget --no-check-certificate https://iweb.dl.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-s etup.exe && wget --no-check-certificate https://iweb.dl.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-lo g.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
     check_file: ["c:/Program Files (x86)/NSIS/nsis-3.01-log.stamp"]
 
 

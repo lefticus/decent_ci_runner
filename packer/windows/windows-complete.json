@@ -53,18 +53,23 @@
       "floppy_files": [
         "{{user `autounattend`}}",
         "./scripts/dis-updates.ps1",
+        "./scripts/enable-updates.ps1",
         "./scripts/hotfix-KB3102810.bat",
         "./scripts/hotfix-KB3020369.bat",
         "./scripts/hotfix-KB3125574.bat",
         "./scripts/hotfix-KB2621440.bat",
         "./scripts/microsoft-updates.bat",
         "./scripts/win-updates.ps1"
+      ],
+      "floppy_dirs": [
+        "./scripts/PSWindowsUpdate"
       ]
+
 
     },
     {
       "type" : "vmware-iso",
-      "guest_os_type" : "ubuntu-64",
+      "guest_os_type" : "windows7-64",
       "vm_name" : "{{user `name`}}-vmware",
 
       "vmx_data" : {
@@ -79,29 +84,31 @@
       "iso_checksum" : "{{user `iso_checksum`}}",
       "iso_checksum_type" : "{{user `iso_checksum_type`}}",
 
-      "http_directory" : ".",
-      "http_port_min" : 9001,
-      "http_port_max" : 9001,
+      "communicator" : "winrm",
+      "winrm_username" : "{{user `ssh_name`}}",
+      "winrm_password" : "{{user `ssh_pass`}}",
+      "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
 
-      "boot_wait" : "10s",
 
-      "ssh_username" : "{{user `ssh_name`}}",
-      "ssh_password" : "{{user `ssh_pass`}}",
-      "ssh_wait_timeout" : "20m",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
 
-      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
-
-      "boot_command" : [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz noapic ",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname={{user `hostname`}} ",
-        "fb=false debconf/frontend=noninteractive ",
-        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-        "initrd=/install/initrd.gz -- <enter>"
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/dis-updates.ps1",
+        "./scripts/enable-updates.ps1",
+        "./scripts/hotfix-KB3102810.bat",
+        "./scripts/hotfix-KB3020369.bat",
+        "./scripts/hotfix-KB3125574.bat",
+        "./scripts/hotfix-KB2621440.bat",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "floppy_dirs": [
+        "./scripts/PSWindowsUpdate"
       ]
+
     }
 
   ],
@@ -115,124 +122,73 @@
         "Start-Sleep -seconds 5",
         "& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
         "Start-Sleep -seconds 5",
-        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))",
-        "choco install --yes --acceptlicense git"
+        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
       ]
     },
+
     {
       "type" : "file",
       "source" : "elevate.exe",
       "destination" : "c:/ProgramData/Chocolatey/bin/elevate.exe"
     },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
     {
       "type" : "windows-restart",
       "restart_timeout" : "15m"
     },
     {
-      "type" : "windows-shell",
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "script" : "scripts/choco_install_git.ps1"
+    },
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
     {
       "type" : "windows-restart",
       "restart_timeout" : "15m"
     },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \"",
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false ; true \""
-      ]
-    },
-    {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
-    },
-    {
-      "type" : "windows-shell",
 
-      "inline" : [
-        "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true false \""
-      ]
-    },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci.bat" },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
     {
-      "type" : "windows-restart",
-      "restart_timeout" : "15m"
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "c:\\decent_ci_runner\\decent_ci_config.yaml"
     }
+
    ]
 }

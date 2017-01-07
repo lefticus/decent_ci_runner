@@ -29,8 +29,8 @@
             </DiskConfiguration>
             <UserData>
                 <AcceptEula>true</AcceptEula>
-                <FullName>Vagrant Administrator</FullName>
-                <Organization>Vagrant Inc.</Organization>
+                <FullName>decent_ci user</FullName>
+                <Organization>decent_ci</Organization>
                 <!-- Product Key from http://technet.microsoft.com/en-us/library/jj612867.aspx -->
                 <ProductKey>
                     <!-- Do not uncomment the Key element if you are using trial ISOs -->
@@ -154,66 +154,55 @@
                     <Order>22</Order>
                     <Description>Disable password expiration for decent_ci user</Description>
                 </SynchronousCommand>
-                <!-- WITHOUT WINDOWS UPDATES -->
-                <!--
+
+                <!-- Disable automatic updates so the system update process doesn't interfere with the update script -->
+
+                
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\dis-updates.ps1</CommandLine>
                     <Description>Disable Automatic Updates</Description>
-                    <Order>96</Order>
+                    <Order>80</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\openssh.ps1 -AutoStart</CommandLine>
-                    <Description>Install OpenSSH</Description>
-                    <Order>99</Order>
-                    <RequiresUserInput>true</RequiresUserInput>
-                </SynchronousCommand>
-                -->
-                <!-- END WITHOUT WINDOWS UPDATES -->
-                <!-- WITH WINDOWS UPDATES -->
-                <!-- Disable automatic updates so the system update process doesn't interfere with the update script -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB3102810.bat</CommandLine>
-                    <Order>90</Order>
-                    <Description>Install Windows Update Hotfix (KB3102810)</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c a:\hotfix-KB3020369.bat</CommandLine>
-                    <Order>91</Order>
-                    <Description>Install Windows Update Hotfix (KB3020369)</Description>
+                    <Order>81</Order>
+                    <Description>Install Windows 7 Update Hotfix (KB3102810)</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB2621440.bat</CommandLine>
-                    <Order>92</Order>
+                    <Order>82</Order>
                     <Description>Install Windows Update Hotfix (KB2621440)</Description>
                 </SynchronousCommand>
 
                 <SynchronousCommand wcm:action="add">
+                    <CommandLine>cmd.exe /c a:\hotfix-KB3020369.bat</CommandLine>
+                    <Order>83</Order>
+                    <Description>Install Windows Update Hotfix (KB3020369)</Description>
+                </SynchronousCommand>
+
+
+                <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB3125574.bat</CommandLine>
-                    <Order>93</Order>
+                    <Order>84</Order>
                     <Description>Install Windows 7 Roll-up updates (KB3125574)</Description>
                 </SynchronousCommand>
+
+                
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\microsoft-updates.bat</CommandLine>
-                    <Order>94</Order>
+                    <Order>85</Order>
                     <Description>Enable Microsoft Updates</Description>
                 </SynchronousCommand>
 
-
 <!--
-
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\win-updates.ps1 -MaxUpdatesPerCycle 100 -RestartRequired 1</CommandLine>
-                    <Description>Install Windows Updates</Description>
-                    <Order>100</Order>
+                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\enable-updates.ps1</CommandLine>
+                    <Description>Enable Automatic Updates</Description>
+                    <Order>86</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
 -->
-
-                <!-- END WITH WINDOWS UPDATES -->
-
-
-
                 <!-- WINRM SETUP -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c winrm quickconfig -q</CommandLine>

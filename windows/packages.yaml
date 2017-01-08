@@ -28,16 +28,16 @@ packages:
 
   - name: mingw
     source: script
-    script: bash -c "wget http://downloads.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -qO /tmp/mingw-get.zip && elevate -w mkdir /c/MinGW && cd /c/MinGW && unzip -o -qq /tmp/mingw-get.zip && bin/mingw-get install mingw32-base mingw32-gcc-fortran"
+    script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -qO /tmp/mingw-get.zip && elevate -w mkdir /c/MinGW && cd /c/MinGW && unzip -o -qq /tmp/mingw-get.zip && bin/mingw-get install mingw32-base mingw32-gcc-fortran"
     check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
   - name: nsis
     source: script
-    script: bash -c "wget http://downloads.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-s etup.exe && wget --no-check-certificate https://download.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-lo g.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
+    script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-s etup.exe && wget --no-check-certificate https://download.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-lo g.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
     check_file: ["c:/Program Files (x86)/NSIS/nsis-3.01-log.stamp"]
-#  - name: miktex
-#    source: script
-#    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6116.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose && rm -rf ~/Desktop/MikTeX\\ Download\\ Files && rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
-#    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
+  - name: miktex
+    source: script
+    script:  bash -c "wget --no-check-certificate http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup-2.9.6116.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose && rm -rf ~/Desktop/MikTeX\\ Download\\ Files && rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
+    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
 
 
 

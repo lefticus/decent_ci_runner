@@ -189,6 +189,8 @@ function runonboot  {
         echo "    <dict>" >> $PLIST
         echo "      <key>PATH</key>" >> $PLIST
         echo "      <string>$PATH</string>" >> $PLIST
+        echo "      <key>OPENSSL_ROOT_DIR</key>" >> $PLIST
+        echo "      <string>/usr/local/opt/openssl</string>" >> $PLIST
         echo "    </dict>" >> $PLIST
         echo "    <key>KeepAlive</key>" >> $PLIST
         echo "    <true/>" >> $PLIST
@@ -196,7 +198,8 @@ function runonboot  {
         echo "</plist>" >> $PLIST
 
         sudo cp $PLIST /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist
- 
+        echo "export OPENSSL_ROOT_DIR=/usr/local/opt/openssl" | tee -a /etc/profile
+
         rm $PLIST
 
         launchctl unload /Library/LaunchDaemons/com.emptycrate.decent_ci_runner.plist

@@ -115,7 +115,9 @@
         "echo $PATH",
         "echo \"\" | /usr/bin/ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\"",
         "brew install xz",
-        "brew install openssl"
+        "brew install openssl",
+        "brew install autoconf",
+        "brew install automake"
       ],
       "environment_vars": [
         "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"

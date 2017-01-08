@@ -172,7 +172,7 @@
       ],
       "type": "shell"
     },
-    { 
+    {
       "type" : "file",
       "source" : "decent_ci_config.yaml",
       "destination" : "/usr/local/etc/decent_ci_config.yaml"

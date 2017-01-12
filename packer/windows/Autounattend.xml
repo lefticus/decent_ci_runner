@@ -157,7 +157,7 @@
 
                 <!-- Disable automatic updates so the system update process doesn't interfere with the update script -->
 
-                
+
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\dis-updates.ps1</CommandLine>
                     <Description>Disable Automatic Updates</Description>
@@ -167,18 +167,18 @@
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB3102810.bat</CommandLine>
                     <Order>81</Order>
-                    <Description>Install Windows 7 Update Hotfix (KB3102810)</Description>
+                    <Description>Install Windows 7 Update (high CPU usage) Hotfix (KB3102810)</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB2621440.bat</CommandLine>
                     <Order>82</Order>
-                    <Description>Install Windows Update Hotfix (KB2621440)</Description>
+                    <Description>Install Windows 7 remote security update Hotfix (KB2621440)</Description>
                 </SynchronousCommand>
 
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\hotfix-KB3020369.bat</CommandLine>
                     <Order>83</Order>
-                    <Description>Install Windows Update Hotfix (KB3020369)</Description>
+                    <Description>Install Windows Servicing Stack Update (KB3020369)</Description>
                 </SynchronousCommand>
 
 
@@ -188,21 +188,25 @@
                     <Description>Install Windows 7 Roll-up updates (KB3125574)</Description>
                 </SynchronousCommand>
 
-                
+
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c a:\microsoft-updates.bat</CommandLine>
                     <Order>85</Order>
                     <Description>Enable Microsoft Updates</Description>
                 </SynchronousCommand>
 
-<!--
+
+                <!-- install all possible updates -->
+
+                <!--
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\enable-updates.ps1</CommandLine>
-                    <Description>Enable Automatic Updates</Description>
-                    <Order>86</Order>
-                    <RequiresUserInput>true</RequiresUserInput>
+                  <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\win-updates.ps1</CommandLine>
+                  <Description>Install updates</Description>
+                  <Order>86</Order>
+                  <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
--->
+                -->
+
                 <!-- WINRM SETUP -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c winrm quickconfig -q</CommandLine>

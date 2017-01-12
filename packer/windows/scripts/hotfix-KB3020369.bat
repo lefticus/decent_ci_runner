@@ -4,9 +4,6 @@
 @echo off
 
 
-https://download.microsoft.com/download/5/D/0/5D0821EB-A92D-4CA2-9020-EC41D56B074F/Windows6.1-KB3020369-x64.msu
-
-
 @powershell -NoProfile -ExecutionPolicy Bypass -Command "((new-object net.webclient).DownloadFile('https://download.microsoft.com/download/5/D/0/5D0821EB-A92D-4CA2-9020-EC41D56B074F/Windows6.1-KB3020369-x64.msu', 'C:\Windows\Temp\Windows6.1-KB3020369-x64.msu'))"
 
 set hotfix="C:\Windows\Temp\Windows6.1-KB3020369-x64.msu"

@@ -233,8 +233,20 @@
     { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
     { "type" : "windows-restart", "restart_timeout" : "15m" },
 
+    { "type" : "windows-shell", "inline": "echo INSTALL 13" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
 
-    { "type" : "windows-shell", "inline": "echo INSTALL 13 FINAL **** FINAL ***" },
+    { "type" : "windows-shell", "inline": "echo INSTALL 14" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 15 FINAL **** FINAL ***" },
     { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
     { "type" : "windows-shell", "script": "scripts/decent_ci.bat" },
     { "type" : "windows-restart", "restart_timeout" : "15m" },
@@ -254,7 +266,7 @@
     { "type" : "windows-restart", "restart_timeout" : "15m" },
 
 
-    { "type" : "windows-shell", "inline": "Cleaning up temp dir" },
+    { "type" : "windows-shell", "inline": "echo Cleaning up temp dir" },
     { "type" : "windows-shell", "inline": "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"rm -rf /tmp/* ; true\"" },
     { "type" : "windows-restart", "restart_timeout" : "15m" },
 

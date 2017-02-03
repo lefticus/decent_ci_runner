@@ -30,7 +30,14 @@ echo "$0 installdeps: '$1' runonboot: '$2' [bootstrap_deps_only: '$3']"
 if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh
-  RUBY=ruby2.0
+
+  if [ `lsb_release | grep "14.04"` ]
+  then
+    RUBY=ruby2.0
+  else
+    RUBY=ruby
+  fi
+
   TOOL="wget -O -"
 elif [ `uname` == "Darwin" ]
 then

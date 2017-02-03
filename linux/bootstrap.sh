@@ -7,7 +7,7 @@ if [ ! `which ruby` ]
 then
   if [ "$1" == "true" ]
   then
-    if [ ! `lsb_release | grep "14.04"` ]
+    if [ `lsb_release | grep "14.04"` ]
     then
       # this is ubuntu 14.04, install ruby and ruby2.0
       sudo apt-get --yes install ruby ruby2.0

@@ -1,12 +1,4 @@
-
-apt-sources:
-  - key: http://llvm.org/apt/llvm-snapshot.gpg.key
-    repository: deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.5 main
-    id: AF4F7421
-
 packages:
-  - name: g++-4.8
-    source: apt
   - name: libc++-dev
     source: apt
   - name: ruby
@@ -27,6 +19,8 @@ packages:
 #    source: apt
   - name: ruby2.0 
     source: apt
+  - name: ruby2.0-dev
+    source: apt
   - name: libssl-dev
     source: apt
   - name: libxt-dev
@@ -35,8 +29,6 @@ packages:
     source: apt
   - name: graphviz
     source: apt 
-  - name: ruby2.0-dev
-    source: apt
   - name: python2.7 
     source: apt
   - name: python-pip
@@ -48,8 +40,6 @@ packages:
   - name: ttf-mscorefonts-installer
     source: apt
   - name: valgrind
-    source: apt
-  - name: clang-3.5
     source: apt
   - name: python3 
     source: apt
@@ -82,14 +72,4 @@ packages:
     source: dpkg
     url: https://github.com/jgm/pandoc/releases/download/1.15.2/pandoc-1.15.2-1-amd64.deb
 
-
-  - name: octokit
-    source: gem2.0
-  - name: activesupport
-    source: gem2.0
-    version: 4.2.7
-  - name: le
-    source: gem2.0
-  - name: deep_merge
-    source: gem2.0
 

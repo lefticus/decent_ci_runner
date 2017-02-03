@@ -1,0 +1,21 @@
+
+apt-sources:
+  - key: http://llvm.org/apt/llvm-snapshot.gpg.key
+    repository: deb http://llvm.org/apt/xenial/ llvm-toolchain-xenial-3.5 main
+    id: AF4F7421
+
+packages:
+  - name: g++-4.8
+    source: apt
+  - name: clang-3.5
+    source: apt
+  - name: octokit
+    source: gem
+  - name: activesupport
+    source: gem
+    version: 4.2.7
+  - name: le
+    source: gem
+  - name: deep_merge
+    source: gem
+

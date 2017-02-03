@@ -31,7 +31,8 @@ if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh
 
-  if [ `lsb_release | grep "14.04"` ]
+  lsb_release | grep "14.04"
+  if [ $? -eq 0  ]
   then
     RUBY=ruby2.0
   else

@@ -11,16 +11,12 @@ packages:
     source: apt
   - name: cmake-curses-gui 
     source: apt
-  - name: qt5-default 
-    source: apt 
-  - name: libqt5webkit5-dev 
-    source: apt
-  - name: libboost1.55-all-dev 
-    source: apt
-  - name: ruby2.0 
-    source: apt
-  - name: ruby2.0-dev
-    source: apt
+#  - name: qt5-default 
+#    source: apt 
+#  - name: libqt5webkit5-dev 
+#    source: apt
+#  - name: libboost1.55-all-dev 
+#    source: apt
   - name: libssl-dev
     source: apt
   - name: libxt-dev

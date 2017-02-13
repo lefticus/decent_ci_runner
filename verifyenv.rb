@@ -5,7 +5,8 @@ require 'tempfile'
 yml = YAML.load_file("packages.yaml")
 
 if /.*linux.*/i =~ RUBY_PLATFORM
-  if `lsb_release -r` =~ /16\.04/
+
+  if `lsb_release -r` =~ /14\.04/
     config = YAML.load_file("linux/packages-14.04.yaml")
   else
     config = YAML.load_file("linux/packages-16.04.yaml")

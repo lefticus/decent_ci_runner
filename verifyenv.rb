@@ -4,8 +4,15 @@ require 'tempfile'
 
 yml = YAML.load_file("packages.yaml")
 
-if /.*linux.*/i =~ RUBY_PLATFORM 
+if /.*linux.*/i =~ RUBY_PLATFORM
+  if `lsb_release -r` =~ /16\.04/
+    config = YAML.load_file("linux/packages-14.04.yaml")
+  else
+    config = YAML.load_file("linux/packages-16.04.yaml")
+  end
+
   config = YAML.load_file("linux/packages.yaml")
+
   SUDO_TOOL="sudo"
   GEM_NEEDS_SUDO=true
   PIP_NEEDS_SUDO=true

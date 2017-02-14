@@ -3,8 +3,6 @@ packages:
     source: choco
   - name: octokit
     source: gem
-  - name: activesupport
-    source: gem
   - name: le
     source: gem
   - name: python2
@@ -18,59 +16,28 @@ packages:
     version: 1.16.0.2
   - name: wkhtmltopdf
     source: choco
-    
-  - name: nsis
-    source: script
-    script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-setup.exe && wget --no-check-certificate https://download.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-log.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w /usr/bin/touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
-    check_file: ["c:/Program Files (x86)/NSIS/nsis-3.01-log.stamp", "c:/Program Files (x86)/NSIS/makensisw.exe"]
-    
   - name: VisualStudio2015Community
     source: choco
     package_parameters: "--Features MDDCPlusPlus"
-
   - name: VisualStudioCommunity2013
     source: choco
   - name: "VS2013.4"
     source: choco
   - name: NSSM
     source: choco
-  - name: EnergyPlus
-    source: script
-    script: bash -c "wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe -qO /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe && elevate -w touch /c/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm  /tmp/EnergyPlus-8.3.0-6d97d074ea-Windows-x86_64.exe "
-    check_file: "c:/EnergyPlusV8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp"
-    message: "Accept default settings for installing EnergyPlus"
-
-#  - name: Qt
-#    source: script
-#    script: bash -c "wget http://download.qt.io/official_releases/online_installers/qt-unified-windows-x86-online.exe -qO /tmp/qt-unified-windows-x86-online.exe && elevate -w /tmp/qt-unified-windows-x86-online.exe ; rm  /tmp/qt-unified-windows-x86-online.exe "
-#    check_file: [ "c:/Qt/5.3/msvc2013_64_opengl", "c:/Qt/5.3/msvc2013_opengl" ]
-#    message: "Make sure version 5.3 msvc2013 opengl 64bit and 32bit are selected"
-
-  - name: boost
-    source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-32.exe -qO /tmp/boost_1_55_0-msvc-12.0-32.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-32.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-32.exe "
-    check_file: "c:/local/boost_1_55_0/lib32-msvc-12.0"
-    message: "Accept default settings for installing boost 32bit"
-
-  - name: boost
-    source: script
-    script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
-    check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
-    message: "Accept default settings for installing boost 64bit"
 
   - name: mingw
     source: script
-    script:  bash -c "wget http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download -qO /tmp/mingw-get-setup.exe && elevate -w /tmp/mingw-get-setup.exe ; rm  /tmp/mingw-get-setup.exe"
+    script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -qO /tmp/mingw-get.zip && elevate -w mkdir /c/MinGW && cd /c/MinGW && unzip -o -qq /tmp/mingw-get.zip && bin/mingw-get install mingw32-base mingw32-gcc-fortran"
     check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
-    message: "Make sure gfortran and base are selected"
-    
+  - name: nsis
+    source: script
+    script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-setup.exe && wget --no-check-certificate https://download.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-log.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w /usr/bin/touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
+    check_file: ["c:/Program Files (x86)/NSIS/nsis-3.01-log.stamp", "c:/Program Files (x86)/NSIS/makensisw.exe"]
   - name: miktex
     source: script
-    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/setup-2.9.5870.exe -qO /tmp/miktex-setup.exe && elevate -w /tmp/miktex-setup.exe ; rm  /tmp/miktex-setup.exe"
+    script:  bash -c "wget --no-check-certificate http://mirrors.ctan.org/systems/win32/miktex/setup/miktexsetup.zip -qO /tmp/miktex-setup.zip && cd /tmp && unzip -o miktex-setup.zip && /tmp/miktexsetup.exe download --shared=yes --package-set=complete --verbose && /tmp/miktexsetup.exe install --shared=yes --package-set=complete --verbose && rm -rf ~/Desktop/MikTeX\\ Download\\ Files && rm -rf /c/Program\\ Files\\ \\(x86\\)/MiKTeX\\ 2.9/doc"
     check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
-    message: "Make sure all packages are installed for all users"
-    
-    
 
 
 

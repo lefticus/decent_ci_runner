@@ -3,6 +3,28 @@
 require 'fileutils'
 require 'yaml'
 require 'deep_merge'
+require 'rbconfig'
+
+def manage_vm(exe, vm_command)
+  command = "\"#{exe}\" #{vm_command}"
+  begin
+    puts "Executing VM Command: #{command}"
+    result = `#{command}`
+    puts "VM '#{command}' result: '#{result}'"
+
+    if $?.exitstatus == 0
+      return result
+    else
+      puts "While executing vm command: '#{command}' an error code was returned"
+      return nil
+    end
+
+  rescue => e
+    puts "While executing vm command: '#{command}' error '#{e.to_s}'"
+    return nil
+  end
+end
+
 
 if ARGV.length < 1
   puts "Usage: #{__FILE__} <config_file>"
@@ -10,6 +32,7 @@ if ARGV.length < 1
 end
 
 puts "starting CI system"
+
 
 begin
   puts "Loading configuration file from : '#{ARGV[0]}'"
@@ -70,13 +93,87 @@ begin
   end
 
   puts "Successfully cloned decent_ci repository."
+  system("git checkout #{config["branch_name"]}")
 
   FileUtils.cd(run_dir)
 
-  puts "Running ci.rb"
-  if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
-    puts "Unable to execute ci.rb script"
+
+  if !config["virtual_machine_list"].nil?
+    puts "Looping over VM list"
+    config["virtual_machine_list"].each { |machine|
+      puts "VM: '#{machine}'"
+      vmname = machine["name"]
+      type = machine["type"]
+      revert_snapshot = machine["revert_snapshot"]
+
+      if vmname.nil?
+        puts "vmname not specified, skipping"
+        next
+      end
+
+      if type.nil?
+        puts "machine type for #{vmname} not specified, skipping"
+        next
+      end
+
+      if type == "vmware"
+        exe = config["virtual_machine_vmware_executable"]
+        if exe.nil?
+          puts "vmware executable not specified, skipping #{vmname}"
+          next
+        end
+
+        if !revert_snapshot.nil?
+          if manage_vm(exe, "-T ws list").split("\n").none? { |name| File.identical?(vmname, name.strip) }
+            puts "vmware #{vmname} not running, executing revert"
+            manage_vm(exe, "-T ws revertToSnapshot \"#{vmname}\" \"#{revert_snapshot}\"")
+          end
+        end
+
+        manage_vm(exe, "-T ws start \"#{vmname}\"")
+      elsif type == "virtualbox"
+        exe = config["virtual_machine_virtualbox_executable"]
+        if exe.nil?
+          puts "virtualbox executable not specified, skipping #{vmname}"
+          next
+        end
+
+        if !revert_snapshot.nil?
+          running_vm = manage_vm(exe, "list runningvms").split("\n").none? { |n|
+            m = /"(?<name>.*)" {(?<uuid>.*)}/.match(n)
+            return !m.nil? && m.size == 2 && (vmname == m[1] || vmname == m[2])
+          }
+
+          if !running_vm 
+            manage_vm(exe, "snapshot \"#{vmname}\" restore \"#{revert_snapshot}\"")
+          end
+        end
+
+        manage_vm(exe, "startvm \"#{vmname}\"")
+	else
+	puts "UNKNOWN VM TYPE"
+      end
+    }
   end
+
+  if !config["virtual_machine_manager_only"]
+    puts "Running ci.rb"
+    if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
+      puts "Unable to execute ci.rb script"
+    end
+  end
+
+  if config["shutdown_after_run"]
+    if RbConfig::CONFIG["target_os"] =~ /mingw|mswin/
+      # windows
+      `shutdown /s`
+    else
+      # not windows
+      `sudo shutdown -h now`
+    end
+  end
+
+
 
 rescue => e
   puts "Error setting up build environment #{e}"

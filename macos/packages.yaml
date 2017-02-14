@@ -2,10 +2,10 @@
 
 packages:
 
-  - name: EnergyPlus
-    source: script
-    script: FILE=`mktemp -d EnergyPlus.XXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -Lo $FILE/EnergyPlus.dmg && hdiutil attach $FILE/EnergyPlus.dmg && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 && sudo touch /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm -rf $FILE
-    check_file: /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
+  #  - name: EnergyPlus
+  #    source: script
+  #    script: FILE=`mktemp -d EnergyPlus.XXXXXX`; curl https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.dmg -Lo $FILE/EnergyPlus.dmg && hdiutil attach $FILE/EnergyPlus.dmg && sudo installer -pkg /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64.pkg -target "/" && hdiutil detach /Volumes/EnergyPlus-8.3.0-6d97d074ea-Darwin-x86_64 && sudo touch /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp ; rm -rf $FILE
+  #    check_file: /Applications/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
 
   - name: wkhtmltox
     source: script
@@ -24,11 +24,7 @@ packages:
 
   - name: packagemaker
     source: script
-    script: "echo;echo;echo;echo;
-             echo \"************************************************************************************************************\";
-             echo \"You must install PackageMaker from https://developer.apple.com/downloads/ from the download 'Auxillary Tools for XCode Late July 2012'\";
-             echo \"************************************************************************************************************\";
-             exit 1;"
+    script: xzdec macos/auxtools.dmg.xz > auxtools.dmg && hdiutil attach auxtools.dmg && cp -av /Volumes/Auxiliary\ Tools/PackageMaker.app /Applications; hdiutil detach /Volumes/Auxiliary\ Tools; rm auxtools.dmg
     check_file: /Applications/PackageMaker.app
 
 

@@ -1,0 +1,184 @@
+{
+  "variables" : {
+    "ssh_name" : "decent_ci",
+    "ssh_pass" : "decent_ci",
+    "hostname" : "decent-ci-macos",
+    "disk_size" : "60000",
+    "iso_url" : "OSX_InstallESD_10.11.2_15C50.dmg",
+    "iso_checksum_type" : "none",
+    "iso_checksum" : "",
+    "memory" : "3096",
+    "cpu_cores" : "2",
+    "name" : "decent-ci-macos",
+    "provisioning_delay": "0"
+  },
+
+  "builders" : [
+    {
+      "type" : "virtualbox-iso",
+      "format" : "ova",
+      "disk_size" : "{{user `disk_size`}}",
+      "guest_os_type" : "MacOS1011_64",
+      "guest_additions_mode" : "disable",
+      "vm_name" : "{{user `name`}}-virtualbox",
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_wait_timeout": "10000s",
+
+      "hard_drive_interface": "sata",
+      "iso_checksum_type": "none",
+      "iso_interface": "sata",
+
+      "vboxmanage" : [
+        ["modifyvm", "{{.Name}}", "--vram", "128"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--audiocontroller", "hda"],
+        ["modifyvm", "{{.Name}}", "--chipset", "ich9"],
+        ["modifyvm", "{{.Name}}", "--firmware", "efi"],
+        ["modifyvm", "{{.Name}}", "--hpet", "on"],
+        ["modifyvm", "{{.Name}}", "--keyboard", "usb"],
+        ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
+        ["modifyvm", "{{.Name}}", "--usbehci", "on"],
+        ["modifyvm", "{{.Name}}", "--vram", "128"],
+
+        ["modifyvm", "{{.Name}}", "--audiocontroller", "hda"],
+        ["modifyvm", "{{.Name}}", "--boot1", "dvd"],
+        ["modifyvm", "{{.Name}}", "--boot2", "disk"]
+      ],
+
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "boot_wait" : "10s",
+
+
+      "shutdown_command": "echo '{{user `ssh_name`}}'|sudo -S shutdown -h now",
+      "post_shutdown_delay" : "1m"
+
+    } ,
+    {
+      "boot_wait": "2s",
+      "disk_size" : "{{user `disk_size`}}",
+      "guest_os_type": "darwin12-64",
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "shutdown_command": "echo '{{user `ssh_name`}}'|sudo -S shutdown -h now",
+      "skip_compaction": true,
+      "ssh_port": 22,
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_wait_timeout": "10000s",
+      "tools_upload_flavor": "darwin",
+      "type": "vmware-iso",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "{{ user `cpu_cores` }}",
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "1",
+        "firmware": "efi",
+        "keyboardAndMouseProfile": "macProfile",
+        "smc.present": "TRUE",
+        "hpet0.present": "TRUE",
+        "ich7m.present": "TRUE",
+        "ehci.present": "TRUE",
+        "usb.present": "TRUE"
+      }
+    } 
+  ],
+
+  "provisioners" : [
+    {
+      "type": "shell-local",
+      "command": "sleep {{user `provisioning_delay`}}"
+    },
+    {
+      "destination": "/private/tmp/set_kcpassword.py",
+      "source": "scripts/support/set_kcpassword.py",
+      "type": "file"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "sleep 120",
+        "shutdown -r now"
+      ],
+      "type": "shell"
+    },
+    {
+      "pause_before": "10s",
+      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }}",
+      "inline": [
+        "echo $PATH",
+        "echo \"\" | /usr/bin/ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\"",
+        "brew install xz",
+        "brew install openssl",
+        "brew install autoconf",
+        "brew install automake"
+      ],
+      "environment_vars": [
+        "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      ],
+      "type": "shell"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} /bin/bash {{ .Path }}",
+      "inline": [
+        "bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true ; true"
+      ],
+      "environment_vars": [
+        "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      ],
+      "type": "shell"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} /bin/bash {{ .Path }}",
+      "inline": [
+        "bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true ; true"
+      ],
+      "environment_vars": [
+        "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      ],
+      "type": "shell"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} /bin/bash {{ .Path }}",
+      "inline": [
+        "bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/add_windows_packer/setup_ci.sh) true true "
+      ],
+      "environment_vars": [
+        "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      ],
+      "type": "shell"
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
+      "scripts": [
+        "scripts/xcode-cli-tools.sh",
+        "scripts/add-network-interface-detection.sh",
+        "scripts/autologin.sh",
+        "scripts/system-update.sh"
+      ],
+      "environment_vars": [
+        "AUTOLOGIN=true",
+        "INSTALL_XCODE_CLI_TOOLS=true",
+        "PASSWORD={{user `ssh_pass`}}",
+        "UPDATE_SYSTEM=true",
+        "USERNAME={{user `ssh_name`}}",
+        "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+      ],
+      "type": "shell"
+    },
+    {
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "/usr/local/etc/decent_ci_config.yaml"
+    }
+   ]
+  
+  
+
+}

@@ -1,0 +1,281 @@
+{
+  "variables" : {
+    "ssh_name" : "decent_ci",
+    "ssh_pass" : "decent_ci",
+    "hostname" : "decent-ci-windows7-64",
+    "disk_size" : "80000",
+    "iso_url" : "en_windows_7_enterprise_with_sp1_x64_dvd_u_677651.iso",
+    "iso_checksum" : "6467c3875955df4514395f0afcaaa62a",
+    "iso_checksum_type" : "md5",
+    "memory" : "4096",
+    "cpu_cores" : "4",
+    "name" : "decent_ci-windows7-64",
+    "autounattend": "Autounattend.xml"
+  },
+
+  "builders" : [
+    {
+      "type" : "virtualbox-iso",
+      "format" : "ova",
+      "disk_size" : "{{user `disk_size`}}",
+      "harddrive_non_rotational" : true,
+      "harddrive_discard" : true,
+
+      "guest_os_type" : "Windows7_64",
+      "guest_additions_mode" : "disable",
+      "vm_name" : "{{user `name`}}-virtualbox",
+
+      "vboxmanage" : [
+        ["modifyvm", "{{.Name}}", "--vram", "32"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
+      ],
+
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "communicator" : "winrm",
+      "winrm_username" : "{{user `ssh_name`}}",
+      "winrm_password" : "{{user `ssh_pass`}}",
+      "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
+
+
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "post_shutdown_delay" : "1m",
+
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/dis-updates.ps1",
+        "./scripts/enable-updates.ps1",
+        "./scripts/hotfix-KB3102810.bat",
+        "./scripts/hotfix-KB3020369.bat",
+        "./scripts/hotfix-KB3125574.bat",
+        "./scripts/hotfix-KB2621440.bat",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "floppy_dirs": [
+        "./scripts/PSWindowsUpdate"
+      ]
+
+
+    },
+    {
+      "type" : "vmware-iso",
+      "guest_os_type" : "windows7-64",
+      "vm_name" : "{{user `name`}}-vmware",
+
+      "vmx_data" : {
+        "cpuid.coresPerSocket" : "1",
+        "memsize" : "{{user `memory`}}",
+        "numvcpus" : "{{user `cpu_cores`}}"
+      },
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "communicator" : "winrm",
+      "winrm_username" : "{{user `ssh_name`}}",
+      "winrm_password" : "{{user `ssh_pass`}}",
+      "winrm_timeout" : "24h",
+      "winrm_use_ssl" : false,
+      "winrm_insecure" : true,
+
+
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+
+      "floppy_files": [
+        "{{user `autounattend`}}",
+        "./scripts/dis-updates.ps1",
+        "./scripts/enable-updates.ps1",
+        "./scripts/hotfix-KB3102810.bat",
+        "./scripts/hotfix-KB3020369.bat",
+        "./scripts/hotfix-KB3125574.bat",
+        "./scripts/hotfix-KB2621440.bat",
+        "./scripts/microsoft-updates.bat",
+        "./scripts/win-updates.ps1"
+      ],
+      "floppy_dirs": [
+        "./scripts/PSWindowsUpdate"
+      ]
+
+    }
+
+  ],
+
+  "provisioners" : [
+    {
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "inline" : [
+        "Start-Sleep -seconds 5",
+        "& 'C:\\Program Files\\Internet Explorer\\iexplore.exe'",
+        "Start-Sleep -seconds 5",
+        "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+      ]
+    },
+
+    {
+      "type" : "file",
+      "source" : "elevate.exe",
+      "destination" : "c:/ProgramData/Chocolatey/bin/elevate.exe"
+    },
+
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"
+    },
+    {
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "script" : "scripts/choco_install_git.ps1"
+    },
+
+
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+
+
+    {
+      "type" : "windows-restart",
+      "restart_timeout" : "15m"
+    },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 1" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 2" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 3" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 4" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 5" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 6" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 7" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 8" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 9" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 10" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 11" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 12" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 13" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 14" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci_always_true.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo INSTALL 15 FINAL **** FINAL ***" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/decent_ci.bat" },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    { "type" : "windows-shell", "inline": "echo VS2015 Repair" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_msiexec.ps1", "scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-shell", "script": "scripts/fix_msvc2015.bat" },
+    { "type" : "powershell", "scripts" : ["scripts/wait_for_vs_install.ps1"] },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+    {
+      "type" : "powershell",
+      "elevated_user" : "{{user `ssh_name`}}",
+      "elevated_password" : "{{user `ssh_pass`}}",
+      "script" : "scripts/choco_install_ie11.ps1"
+    },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    { "type" : "windows-shell", "inline": "echo Cleaning up temp dir" },
+    { "type" : "windows-shell", "inline": "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"rm -rf /tmp/* ; true\"" },
+    { "type" : "windows-restart", "restart_timeout" : "15m" },
+
+
+    {
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "c:\\decent_ci_runner\\decent_ci_config.yaml"
+    }
+
+   ]
+}

@@ -10,6 +10,7 @@ packages:
     source: gem
   - name: activesupport
     source: gem
+    version: 4.2.7
   - name: le
     source: gem
   - name: deep_merge

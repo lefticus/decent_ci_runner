@@ -177,7 +177,7 @@ def install_apt_sources(sources, apt_keys, apt_sources)
 
   sources.each { |source| 
     if !apt_keys.include?(source["id"]) then
-      execute("wget -O - #{source["key"]} | #{SUDO_TOOL} apt-key add -")
+      execute("wget --no-check-certificate -O - #{source["key"]} | #{SUDO_TOOL} apt-key add -")
       did_something = true
     end
 
@@ -219,7 +219,7 @@ end
 def install_dpkg(to_install)
   to_install.each{ |package| 
     if package[0] == "dpkg" then
-      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget \"$URL\" -qO $FILE && #{SUDO_TOOL} dpkg -i $FILE; rm $FILE"))
+      puts(execute("URL='#{package[3]}'; FILE=`mktemp`; wget  --no-check-certificate  \"$URL\" -qO $FILE && #{SUDO_TOOL} dpkg -i $FILE; rm $FILE"))
     end
   }  
 end
@@ -241,25 +241,41 @@ def install_choco(to_install)
     file.write("<?xml version='1.0' encoding='utf-8'?>\n")
     file.write("<packages>\n")
     something_to_do = false
+    visual_studio = false
     to_install.each{ |package| 
       if package[0] == "choco" then
         something_to_do = true
+
+        if package[1].downcase.include? "visualstudio" or package[1].downcase.include? "vs2013"
+          if visual_studio
+            next
+          else
+            visual_studio = true
+          end
+        end
+
+        puts("Scheduling choco install of: #{package[1]}")
+
+        execstring = package[1];
         file.write("<package id='" + package[1] + "'")
         if package[2] != nil then
+          execstring = "#{execstring} --version #{package[2]}"
           file.write(" version='" + package[2] + "'")
         end
         if package[7] != nil then
+          execstring = "#{execstring} --params=\"#{package[7]}\""
           file.write(" packageParameters='" + package[7] + "'")
         end
         file.write(" />\n")
+        puts(execute("#{SUDO_TOOL} choco install #{execstring} --yes --acceptlicense"))
       end
     }
     file.write("</packages>\n");
     file.close()
 
-    if something_to_do then
-      puts(execute("#{SUDO_TOOL} choco install --yes --acceptlicense #{file.path}"))
-    end
+#    if something_to_do then
+#      puts(execute("#{SUDO_TOOL} choco install --yes --acceptlicense #{file.path}"))
+#    end
   }
 end
 
@@ -277,16 +293,25 @@ def install_gem_pip(to_install)
     to_install.each{ |package| 
       if package[0] == gemname then
         something_to_do = true
-        gem_string += package[1]
+        cur_string = gem_string
+        cur_string += package[1]
         if package[2] != nil then
-          gem_string += "=#{package[2]}"
+          if gemname.start_with?("gem")
+            cur_string += " --version #{package[2]}"
+          else
+            cur_string += "=#{package[2]}"
+          end
         end
-        gem_string += " "
+        
+        if gemname.start_with?("gem")
+          cur_string += " --no-rdoc --no-ri"
+        end
+        puts("Scheduling #{gemname} install of: #{cur_string}")
+        puts(execute("#{cur_string}"))
       end
     } 
-    if something_to_do then
-      puts(execute("#{gem_string}"))
-    else
+    
+    if !something_to_do then
       puts("No #{gemname} packages to install")
     end
   } 
@@ -322,7 +347,7 @@ needed_packages.each{ |needed|
     end
   else
     found_packages.each{ |found|
-      if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1] == found[1] then
+      if (needed[0] == found[0] || (needed[0] == "dpkg" && found[0] == "apt")) && needed[1].casecmp(found[1]) == 0 then
         if (needed[2] == nil || needed[2] == "" || needed[2] == found[2]) then
           is_installed = true
           break

@@ -36,6 +36,15 @@ else
   HAS_RUBY=0
 fi
 
+command -v nssm
+
+if [ $? -eq 0 ]
+then
+  HAS_NSSM=1
+else
+  HAS_NSSM=0
+fi
+
 
 command -v elevate
 
@@ -78,14 +87,34 @@ then
 
   if [ $ISADMIN ]
   then
-    echo "Installing the 'elevate' and 'ruby' tool https://chocolatey.org/packages/elevate.native"
-    /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco install --yes --acceptlicense elevate.native ruby
+    if [ $HAS_ELEVATE -eq 0 ]
+    then
+      echo "Installing the 'elevate' tool https://chocolatey.org/packages/elevate.native"
+      /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense elevate.native
+    fi
+
+    if [ $HAS_RUBY -eq 0 ]
+    then
+      echo "Installing 'ruby'"
+      /usr/bin/echo -e "\n\n\n\n" | $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --yes --acceptlicense ruby
+    fi
+
     exit 1
   else
     echo "You must run this process from an administrative bash console to install 'elevate' and 'ruby'"
     exit 2
   fi
 fi
+
+if [ $HAS_NSSM -eq 0 ]
+then
+    /usr/bin/echo -e "\n\n\n\n" |  $ALLUSERSPROFILE\\chocolatey\\bin\\elevate -w -c $ALLUSERSPROFILE\\chocolatey\\bin\\choco upgrade --allow-empty-checksums --yes --acceptlicense NSSM
+fi
+
+elevate gem install rubygems-update --source http://rubygems.org
+elevate update_rubygems
+elevate gem install deep_merge --source http://rubygems.org
+
 
 exit 0
 

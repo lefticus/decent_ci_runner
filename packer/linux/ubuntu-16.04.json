@@ -1,0 +1,174 @@
+{
+  "variables" : {
+    "ssh_name" : "decent_ci",
+    "ssh_pass" : "decent_ci",
+    "hostname" : "decent-ci-ubuntu-16-04",
+    "disk_size" : "40000",
+    "iso_url" : "http://releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso",
+    "iso_checksum" : "d2d939ca0e65816790375f6826e4032f",
+    "iso_checksum_type" : "md5",
+    "memory" : "4096",
+    "cpu_cores" : "4",
+    "name" : "decent_ci-ubuntu-16.04"
+  },
+
+  "builders" : [
+    {
+      "type" : "virtualbox-iso",
+      "guest_os_type" : "Ubuntu_64",
+      "vm_name" : "{{user `name`}}-virtualbox",
+
+      "vboxmanage" : [
+        ["modifyvm", "{{.Name}}", "--vram", "32"],
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpu_cores`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"]
+      ],
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "ssh_username" : "{{user `ssh_name`}}",
+      "ssh_password" : "{{user `ssh_pass`}}",
+      "ssh_wait_timeout" : "20m",
+
+      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+      "boot_command" : [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=us<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_US<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=us<wait>",
+        " keyboard-configuration/layout=USA<wait>",
+        " keyboard-configuration/variant=USA<wait>",
+        " locale=en_US<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- <wait>",
+        "<enter><wait>"
+      ]
+    },
+    {
+      "type" : "vmware-iso",
+      "guest_os_type" : "ubuntu-64",
+      "vm_name" : "{{user `name`}}-vmware",
+
+      "vmx_data" : {
+        "cpuid.coresPerSocket" : "1",
+        "memsize" : "{{user `memory`}}",
+        "numvcpus" : "{{user `cpu_cores`}}"
+      },
+
+      "disk_size" : "{{user `disk_size`}}",
+
+      "iso_url" : "{{user `iso_url`}}",
+      "iso_checksum" : "{{user `iso_checksum`}}",
+      "iso_checksum_type" : "{{user `iso_checksum_type`}}",
+
+      "http_directory" : ".",
+      "http_port_min" : 9001,
+      "http_port_max" : 9001,
+
+      "boot_wait" : "10s",
+
+      "ssh_username" : "{{user `ssh_name`}}",
+      "ssh_password" : "{{user `ssh_pass`}}",
+      "ssh_wait_timeout" : "20m",
+
+      "shutdown_command" : "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+      "boot_command" : [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=us<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_US<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=us<wait>",
+        " keyboard-configuration/layout=USA<wait>",
+        " keyboard-configuration/variant=USA<wait>",
+        " locale=en_US<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- <wait>",
+        "<enter><wait>"
+      ]
+    }
+
+  ],
+
+  "provisioners" : [
+    { 
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "/tmp/decent_ci_config.yaml"
+    },
+    
+    {
+      "type" : "shell",
+      "execute_command" : "echo {{user `ssh_pass`}} | {{ .Vars }} sudo -E -S bash '{{.Path}}'",
+
+      "override" : {
+        "virtualbox-iso" : {
+          "environment_vars" : [
+            "SSH_USERNAME={{user `ssh_name`}}"
+          ],
+          "scripts" : [
+            "decent_ci_setup.sh",
+            "virtualbox.sh"
+          ]
+        },
+        "vmware-iso" : {
+          "environment_vars" : [
+            "SSH_USERNAME={{user `ssh_name`}}"
+          ],
+          "scripts" : [
+            "decent_ci_setup.sh"
+          ]
+        }
+      }
+
+    }
+  ],
+  
+  "post-processors" : [
+    {
+      "type" : "compress",
+      "output" : "{{user `name`}}-{{.BuildName}}.zip"
+    }
+  ]
+  
+  
+
+}

@@ -47,7 +47,7 @@ If the host was created with packer you can choose:
 
  * Re-create the host from scratch following the instructions for building a decent_ci host with packer
  
-- or -
+*OR*
 
  * Follow the instructions for "Manually Managed Hosts" above
  

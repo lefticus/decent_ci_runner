@@ -101,6 +101,11 @@
       "type": "file"
     },
     {
+      "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "/usr/local/etc/decent_ci_config.yaml"
+    },
+    {
       "execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}",
       "inline": [
         "sleep 120",
@@ -171,11 +176,6 @@
         "PATH=/usr/local/opt/qt5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
       ],
       "type": "shell"
-    },
-    {
-      "type" : "file",
-      "source" : "decent_ci_config.yaml",
-      "destination" : "/usr/local/etc/decent_ci_config.yaml"
     }
    ]
   

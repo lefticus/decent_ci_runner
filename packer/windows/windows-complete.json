@@ -131,6 +131,12 @@
 
     {
       "type" : "file",
+      "source" : "decent_ci_config.yaml",
+      "destination" : "c:\\decent_ci_runner\\decent_ci_config.yaml"
+    },
+
+    {
+      "type" : "file",
       "source" : "elevate.exe",
       "destination" : "c:/ProgramData/Chocolatey/bin/elevate.exe"
     },
@@ -268,14 +274,6 @@
 
     { "type" : "windows-shell", "inline": "echo Cleaning up temp dir" },
     { "type" : "windows-shell", "inline": "\"c:\\Program Files\\Git\\bin\\sh.exe\" -c \"rm -rf /tmp/* ; true\"" },
-    { "type" : "windows-restart", "restart_timeout" : "15m" },
-
-
-    {
-      "type" : "file",
-      "source" : "decent_ci_config.yaml",
-      "destination" : "c:\\decent_ci_runner\\decent_ci_config.yaml"
-    }
-
+    { "type" : "windows-restart", "restart_timeout" : "15m" }
    ]
 }

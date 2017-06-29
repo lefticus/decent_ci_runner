@@ -195,6 +195,7 @@ else
   echo "Checkout out decent_ci_runner to $DIR for execution"
   git clone https://github.com/lefticus/decent_ci_runner
   pushd decent_ci_runner
+  git checkout split_requirements
   $RUBY ./verifyenv.rb $CONFIG_FILE $INSTALL_DEPS
   COMMAND_RESULT=$?
   echo "Result of verifyenv.rb: $COMMAND_RESULT"

@@ -12,6 +12,14 @@ then
   exit -1
 fi
 
+if [ -e "$CONFIG_FILE" ]
+then
+  echo "Loading configuration from '$CONFIG_FILE'"
+else
+  echo "Unable to locate configuration file '$CONFIG_FILE'"
+  exit -1
+fi
+
 if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh

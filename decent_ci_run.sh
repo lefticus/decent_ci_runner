@@ -31,7 +31,7 @@ fi
 while [ 0 ]
 do
   echo "Executing setup_ci.sh"
-  bash <($TOOL $BASE/setup_ci.sh) $2
+  bash <($TOOL $BASE/setup_ci.sh) $1 $2
 
   if [ $? -eq 0 ]
   then

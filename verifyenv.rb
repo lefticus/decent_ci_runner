@@ -3,6 +3,7 @@ require 'set'
 require 'tempfile'
 require 'net/http'
 require 'openssl'
+require 'open-uri'
 
 puts("Disabling SSL certificate verification due to client requirements")
 require 'openssl'
@@ -63,17 +64,10 @@ end
 
 def load_yaml(package_path, filename)
   puts ("loading yaml from: '#{package_path}'/'#{filename}'")
-  begin
-    if package_path.empty?
-      return YAML.load_file(filename);
-    elsif package_path.start_with? "http"
-      return YAML.load(Net::HTTP.get(URI("#{package_path}/#{filename}")))
-    else
-      return YAML.load_file("#{package_path}/#{filename}");
-    end
-  rescue EOFError
-    puts ("YAML contained no data")
-    return {}
+  if package_path.empty?
+    return YAML.load(open(filename).read());
+  else
+    return YAML.load(open("#{package_path}/#{filename}").read());
   end
 end
 

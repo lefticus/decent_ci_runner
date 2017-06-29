@@ -18,13 +18,13 @@ Common
 Run either (from a bash shell window)
 
 ```
-bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/master/setup_ci.sh) true true
+bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) true true
 ```
 
 *or*
 
 ```
-bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/master/setup_ci.sh) true true
+bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) true true
 ```
 
 Depending on which (wget|curl) is available on your platform.

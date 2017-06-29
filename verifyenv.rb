@@ -2,6 +2,12 @@ require 'yaml'
 require 'set'
 require 'tempfile'
 require 'net/http'
+require 'openssl'
+
+puts("Disabling SSL certificate verification due to client requirements")
+require 'openssl'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE # warning: already initialized constant VERIFY_PEER
+
 
 install_deps = ARGV[1] == "true"
 config_file = ARGV[0]

@@ -182,7 +182,7 @@ then
   echo "Executing decent_ci_runner from $BASE"
   $RUBY $BASE/verifyenv.rb $CONFIG_FILE $INSTALL_DEPS
   COMMAND_RESULT=$?
-  runonboot $COMMAND_RESULT $RUN_ON_BOOT
+  runonboot $COMMAND_RESULT $RUN_ON_BOOT $CONFIG_FILE
 else
   if [ `uname` == "Darwin" ]
   then
@@ -199,7 +199,7 @@ else
   $RUBY ./verifyenv.rb $CONFIG_FILE $INSTALL_DEPS
   COMMAND_RESULT=$?
   echo "Result of verifyenv.rb: $COMMAND_RESULT"
-  runonboot $COMMAND_RESULT $RUN_ON_BOOT
+  runonboot $COMMAND_RESULT $RUN_ON_BOOT $CONFIG_FILE
   popd
   popd
   echo "Removing $DIR"

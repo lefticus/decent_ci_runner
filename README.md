@@ -20,13 +20,13 @@ Edit a configuration file that matches your requirements, starting from https://
 Run either (from a bash shell window)
 
 ```
-bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) <pathtoconfigfile> true true
+bash <(curl https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) <fullpathtoconfigfile> true true
 ```
 
 *or*
 
 ```
-bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) <pathtoconfigfile> true true
+bash <(wget -O - https://raw.githubusercontent.com/lefticus/decent_ci_runner/split_requirements/setup_ci.sh) <fullpathtoconfigfile> true true
 ```
 
 Depending on which (wget|curl) is available on your platform.

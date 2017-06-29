@@ -93,8 +93,6 @@ package_paths.each{ |package_path|
 }
 
 puts(config)
-exit()
-
 
 needed_packages = []
 

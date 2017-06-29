@@ -1,25 +1,35 @@
 require 'yaml'
 require 'set'
 require 'tempfile'
+require 'net/http'
 
-yml = YAML.load_file("packages.yaml")
+install_deps = ARGV[1] == "true"
+config_file = ARGV[0]
+
+puts("Loading config file '#{config_file}'");
+
+config_file_yml = YAML.load_file(config_file)
+
+is_linux = false
+is_windows = false
+is_macos = false
 
 if /.*linux.*/i =~ RUBY_PLATFORM 
-  config = YAML.load_file("linux/packages.yaml")
+  is_linux = true
   SUDO_TOOL="sudo"
   GEM_NEEDS_SUDO=true
   PIP_NEEDS_SUDO=true
   run_apt = true
   run_choco = false
 elsif /.*darwin.*/i =~ RUBY_PLATFORM
-  config = YAML.load_file("macos/packages.yaml")
+  is_macos = true
   SUDO_TOOL="sudo"
   GEM_NEEDS_SUDO=true
   PIP_NEEDS_SUDO=true
   run_apt = false
   run_choco = false
 else
-  config = YAML.load_file("windows/packages.yaml")
+  is_windows = true
   SUDO_TOOL="elevate -c -w "
   GEM_NEEDS_SUDO=false
   PIP_NEEDS_SUDO=false
@@ -29,9 +39,47 @@ else
 end
 
 
-config["packages"].concat(yml["packages"])
+package_paths = [""]
+config_file_yml["extra_packages_paths"].each { |path|
+  package_paths << path
+  puts("Loading extra packages from: #{path}")
+}
 
-# puts("Found Packages: #{found_packages}")
+
+def concat(dest, src)
+  dest["packages"].concat(src["packages"]) if src && src.include?("packages")
+  dest["apt-sources"].concat(src["apt-sources"]) if src && src.include?("apt-sources")
+end
+
+def load_yaml(package_path, filename)
+  puts ("loading yaml from: '#{package_path}'/'#{filename}'")
+  if package_path.empty?
+    return YAML.load_file(filename);
+  elsif package_path.start_with? "http"
+    return YAML.load(Net::HTTP.get(URI("#{package_path}/#{filename}")))
+  else
+    return YAML.load_file("#{package_path}/#{filename}");
+  end
+end
+
+config = {"packages"=>[], "apt-sources"=>[]}
+
+package_paths.each{ |package_path| 
+  puts("Processing package path: #{package_path}")
+  concat(config, load_yaml(package_path, "packages.yaml"))
+
+  if is_linux
+    concat(config, load_yaml(package_path, "linux/packages.yaml"))
+  elsif is_macos
+    concat(config, load_yaml(package_path, "macos/packages.yaml"))
+  else
+    concat(config, load_yaml(package_path, "windows/packages.yaml"))
+  end
+}
+
+puts(config)
+exit()
+
 
 needed_packages = []
 
@@ -328,7 +376,8 @@ needed_packages.each{ |needed|
   end
 }
 
-if !to_install.empty? and ARGV[0] != "true"
+
+if !to_install.empty? and !install_deps
   puts "Dependency installation disabled, exiting"
   puts "Missing packages: #{to_install}"
   exit 1

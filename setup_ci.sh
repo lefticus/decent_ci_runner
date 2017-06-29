@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 
-echo "$0 installdeps: '$1' runonboot: '$2'"
+echo "$0 configfile: '$1' installdeps: '$2' runonboot: '$3'"
+
+CONFIG_FILE=$1
+INSTALL_DEPS=$2
+RUN_ON_BOOT=$3
+
+if [ "$CONFIG_FILE" == "" ]
+then
+  echo "Expected: '$0 configfile installdeps runonboot"
+  exit -1
+fi
 
 if [ `uname` == "Linux" ]
 then
   RUNFILE=linux/bootstrap.sh
-  RUBY=ruby2.0
+  RUBY=ruby
   TOOL="wget -O -"
 elif [ `uname` == "Darwin" ]
 then
@@ -46,7 +56,7 @@ else
 fi
 
 echo "executing: '$TOOL $BASE/$RUNFILE'"
-bash <($TOOL $BASE/$RUNFILE) $1
+bash <($TOOL $BASE/$RUNFILE) $INSTALL_DEPS
 
 case "$?" in
 
@@ -66,10 +76,15 @@ esac
 
 
 function runonboot  {
-  echo "runonboot '$1' '$2'"
-  if [ $1 -eq 0 ]
+
+  PREVIOUS_SUCCESS=$1
+  DO_RUN_ON_BOOT=$2
+  CONFIG_FILE=$3
+
+  echo "runonboot '$PREVIOUS_SUCCESS' '$DO_RUN_ON_BOOT' '$CONFIG_FILE'"
+  if [ $PREVIOUS_SUCCESS -eq 0 ]
   then
-    if [ "$2" == "true" ]
+    if [ "$DO_RUN_ON_BOOT" == "true" ]
     then
       if [ `uname` == "Linux" ]
       then
@@ -79,7 +94,7 @@ function runonboot  {
         sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
         if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
         then 
-          sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml
+          sudo cp $CONFIG_FILE /usr/local/etc/decent_ci_config.yaml
         fi
         sudo update-rc.d decent_ci defaults
       elif [ `uname` == "Darwin" ]
@@ -91,7 +106,7 @@ function runonboot  {
         sudo cp decent_ci_run.sh /usr/local/bin/decent_ci_run.sh
         if [ ! -e /usr/local/etc/decent_ci_config.yaml ]
         then 
-          sudo cp decent_ci_config.yaml /usr/local/etc/decent_ci_config.yaml
+          sudo cp $CONFIG_FILE /usr/local/etc/decent_ci_config.yaml
         fi
 
         PLIST=`mktemp plist.XXXXXX`
@@ -135,7 +150,15 @@ function runonboot  {
       else
         # windows - install via win32
         echo "windows"
-	ruby installwin32service.rb
+        mkdir "c:\\decent_ci_runner"
+
+        if [ ! -e "c:\\decent_ci_runner\\decent_ci_config.yaml" ]
+        then 
+          cp $CONFIG_FILE "c:\\decent_ci_runner\\decent_ci_config.yaml"
+        fi
+
+        copy decent_ci_run.sh c:\\decent_ci_runner\\decent_ci_run.sh
+        elevate nssm install decent_ci_runner "c:\\Program Files\\Git\\bin\\bash.exe" "c:\\decent_ci_runner\\decent_ci_run.sh" "c:\\decent_ci_runner\\decent_ci_config.yaml" false
       fi
       
       echo "**************************************************************************"
@@ -149,9 +172,9 @@ function runonboot  {
 if [ $ISGITFOLDER -eq 1 ]
 then
   echo "Executing decent_ci_runner from $BASE"
-  $RUBY $BASE/verifyenv.rb $1
+  $RUBY $BASE/verifyenv.rb $CONFIG_FILE $INSTALL_DEPS
   COMMAND_RESULT=$?
-  runonboot $COMMAND_RESULT $2
+  runonboot $COMMAND_RESULT $RUN_ON_BOOT
 else
   if [ `uname` == "Darwin" ]
   then
@@ -164,10 +187,10 @@ else
   echo "Checkout out decent_ci_runner to $DIR for execution"
   git clone https://github.com/lefticus/decent_ci_runner
   pushd decent_ci_runner
-  $RUBY ./verifyenv.rb $1
+  $RUBY ./verifyenv.rb $CONFIG_FILE $INSTALL_DEPS
   COMMAND_RESULT=$?
   echo "Result of verifyenv.rb: $COMMAND_RESULT"
-  runonboot $COMMAND_RESULT $2
+  runonboot $COMMAND_RESULT $RUN_ON_BOOT
   popd
   popd
   echo "Removing $DIR"

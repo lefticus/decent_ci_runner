@@ -43,10 +43,6 @@ packages:
     source: apt
   - name: cppcheck
     source: apt
-  - name: gfortran
-    source: apt
-  - name: ttf-mscorefonts-installer
-    source: apt
   - name: valgrind
     source: apt
   - name: clang-3.5
@@ -67,21 +63,6 @@ packages:
     source: apt
   - name: curl
     source: apt
-  - name: texlive-full
-    source: apt
-
-  - name: EnergyPlus
-    source: script
-    script: FILE=`mktemp`; FILE2=`mktemp`; /bin/echo -en "y\n\nn\n" > $FILE2; cat $FILE2; wget --no-check-certificate https://github.com/NREL/EnergyPlus/releases/download/v8.3.0/EnergyPlus-8.3.0-6d97d074ea-Linux-x86_64.sh -qO $FILE && sudo sh $FILE < $FILE2 && sudo touch /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp; rm $FILE; rm $FILE2
-    check_file: /usr/local/EnergyPlus-8-3-0/EnergyPlus-8-3-0-6d97d074ea.stamp
-
-  - name: wkhtmltox
-    source: dpkg
-    url: http://download.gna.org/wkhtmltopdf/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
-  - name: pandoc
-    source: dpkg
-    url: https://github.com/jgm/pandoc/releases/download/1.15.2/pandoc-1.15.2-1-amd64.deb
-
 
   - name: octokit
     source: gem2.0

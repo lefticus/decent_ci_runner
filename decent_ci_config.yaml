@@ -19,4 +19,15 @@ options:
 repositories:
   - "NREL/EnergyPlus"  
 
+# each path in this list will be treated as a top level directory
+# loading the files 
+#   <PATH>/packages.yml
+#   <PATH>/linux/packages*.yml
+#   <PATH>/macos/packages.yml
+#   <PATH>/windows/packages.yml
+#
+# As appropriate
+extra_packages_paths:
+  - "https://raw.githubusercontent.com/lefticus/decent_ci_energyplus_packages/master"
+
 

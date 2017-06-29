@@ -13,12 +13,7 @@ packages:
     source: choco
   - name: cmake.portable
     source: choco
-  - name: pandoc
-    source: choco
-    version: 1.16.0.2
-  - name: wkhtmltopdf
-    source: choco
-    
+   
   - name: nsis
     source: script
     script: bash -c "wget --no-check-certificate http://downloads.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-setup.exe -qO /tmp/nsis-3.01-setup.exe && wget --no-check-certificate https://download.sourceforge.net/project/nsis/NSIS%203/3.01/nsis-3.01-log.zip -qO /tmp/nsis-3.01-log.zip && elevate -w /tmp/nsis-3.01-setup.exe //S && elevate unzip -o /tmp/nsis-3.01-log.zip -d /c/Program\ Files\ \(x86\)/NSIS && elevate -w /usr/bin/touch /c/Program\ Files\ \(x86\)/NSIS/nsis-3.01-log.stamp ; rm  /tmp/nsis-3.01-*.*"
@@ -57,20 +52,5 @@ packages:
     script: bash -c "wget http://iweb.dl.sourceforge.net/project/boost/boost-binaries/1.55.0-build2/boost_1_55_0-msvc-12.0-64.exe -qO /tmp/boost_1_55_0-msvc-12.0-64.exe && elevate -w /tmp/boost_1_55_0-msvc-12.0-64.exe ; rm  /tmp/boost_1_55_0-msvc-12.0-64.exe "
     check_file: "c:/local/boost_1_55_0/lib64-msvc-12.0"
     message: "Accept default settings for installing boost 64bit"
-
-  - name: mingw
-    source: script
-    script:  bash -c "wget http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download -qO /tmp/mingw-get-setup.exe && elevate -w /tmp/mingw-get-setup.exe ; rm  /tmp/mingw-get-setup.exe"
-    check_file: ["c:/MinGW/bin/mingw32-gfortran.exe", "c:/MinGW/bin/mingw32-make.exe"]
-    message: "Make sure gfortran and base are selected"
-    
-  - name: miktex
-    source: script
-    script:  bash -c "wget http://mirrors.ctan.org/systems/win32/miktex/setup/setup-2.9.5870.exe -qO /tmp/miktex-setup.exe && elevate -w /tmp/miktex-setup.exe ; rm  /tmp/miktex-setup.exe"
-    check_file: ["c:/Program Files (x86)/MiKTeX 2.9/miktex/bin/xelatex.exe"]
-    message: "Make sure all packages are installed for all users"
-    
-    
-
 
 

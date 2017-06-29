@@ -19,4 +19,8 @@ packages:
     check_file: /Applications/CMake.app/Contents/bin/cmake
 
 
+  - name: octokit
+    source: gem
+  - name: activesupport
+    source: gem
 

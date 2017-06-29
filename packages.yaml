@@ -6,10 +6,6 @@ packages:
   - name: PyGithub
     source: pip
 
-  - name: octokit
-    source: gem
-  - name: activesupport
-    source: gem
   - name: le
     source: gem
   - name: deep_merge

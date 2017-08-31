@@ -11,11 +11,17 @@ environment:
   DECENT_CI_BRANCH_FILTER: ".*"
   DECENT_CI_COMPILER_FILTER: ".*"
 test_mode: true
+# use this to try and clean up build dirs that are left around
+# between executions. It matches files in the run_dir of the 
+# form: /^.+-[0-0a-f]+-.+-.+-.+$/
+purge_build_dirs: false
 github_token: "ABCDEF1234567890"
 options:
   - "--no-verbose"
 # You probably want to uncomment this on Windows
 #  - "--disable-ssl-verification"
+#  Use this for testing
+#  - "--keep-build-folder"
 repositories:
   - "NREL/EnergyPlus"  
 

@@ -51,7 +51,7 @@ begin
 
       break
     rescue => e 
-      puts "Error setting up build folders, sleeping and trying again"
+      puts "Error setting up build folders, sleeping and trying again: #{e}"
       sleep 120
     end
   end
@@ -72,11 +72,26 @@ begin
   puts "Successfully cloned decent_ci repository."
 
   FileUtils.cd(run_dir)
+  
+  if !config["purge_build_dirs"].nil? and config["purge_build_dirs"] then
+    puts "Purging Build Dirs in #{run_dir}"
+    Dir.entries(run_dir).each { |entry|
+      begin
+        if File.directory?(entry) and entry =~ /^.+-[a-f0-9]+-.+-.+$/ then
+          puts "Purging matched directory: #{entry}"
+          FileUtils.remove_entry_secure(entry, true)
+        end
+      rescue => e
+        puts "Error while attempting purge of build dir '#{entry}': '#{e}'"
+      end
+    }
+  end
 
   puts "Running ci.rb"
   if !system(merged_env, "#{RbConfig.ruby}", "#{run_dir}/decent_ci/ci.rb", *config["options"], config["test_mode"] ? "true" : "false", config["github_token"], *config["repositories"])
     puts "Unable to execute ci.rb script"
   end
+
 
 rescue => e
   puts "Error setting up build environment #{e}"

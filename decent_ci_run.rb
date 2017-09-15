@@ -76,9 +76,13 @@ begin
   if !config["purge_build_dirs"].nil? and config["purge_build_dirs"] then
     puts "Purging Build Dirs in #{run_dir}"
     Dir.entries(run_dir).each { |entry|
-      if File.directory?(entry) and entry =~ /^.+-[a-f0-9]+-.+-.+$/ then
-        puts "Purging matched directory: #{entry}"
-        FileUtils.remove_entry_secure(entry, true)
+      begin
+        if File.directory?(entry) and entry =~ /^.+-[a-f0-9]+-.+-.+$/ then
+          puts "Purging matched directory: #{entry}"
+          FileUtils.remove_entry_secure(entry, true)
+        end
+      rescue => e
+        puts "Error while attempting purge of build dir '#{entry}': '#{e}'"
       end
     }
   end

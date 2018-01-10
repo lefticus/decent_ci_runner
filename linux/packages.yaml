@@ -51,6 +51,8 @@ packages:
     source: apt
   - name: clang-3.5
     source: apt
+  - name: clang-format-3.5
+    source: apt
   - name: python3 
     source: apt
   - name: python3-yaml 
@@ -68,6 +70,8 @@ packages:
   - name: curl
     source: apt
   - name: texlive-full
+    source: apt
+  - name: libwxgtk3.0
     source: apt
 
   - name: EnergyPlus
@@ -87,5 +91,10 @@ packages:
   - name: le
     source: gem2.0
   - name: deep_merge
+    source: gem2.0
+  - name: nokogiri
+    source: gem2.0
+    version: 1.6.8.1
+  - name: rubyXL
     source: gem2.0
 

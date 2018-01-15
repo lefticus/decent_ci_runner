@@ -51,7 +51,7 @@ packages:
     source: apt
   - name: clang-3.5
     source: apt
-  - name: clang-format-3.5
+  - name: clang-format-3.9
     source: apt
   - name: python3 
     source: apt

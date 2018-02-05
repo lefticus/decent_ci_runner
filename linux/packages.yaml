@@ -71,7 +71,7 @@ packages:
     source: apt
   - name: texlive-full
     source: apt
-  - name: libwxgtk3.0
+  - name: libwxgtk3.0-0
     source: apt
 
   - name: EnergyPlus
